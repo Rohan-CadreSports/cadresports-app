@@ -1,0 +1,487 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum UserRole {
+  PLAYER
+  TEAM_CAPTAIN
+  TOURNAMENT_OPERATOR
+  FEDERATION_ADMIN
+  SUPER_ADMIN
+}
+
+enum LeagueStructure {
+  ROUND_ROBIN
+  ROUND_ROBIN_DOUBLE
+  TOURNAMENT
+  HYBRID
+}
+
+enum LeagueStatus {
+  DRAFT
+  REGISTRATION_OPEN
+  REGISTRATION_CLOSED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum MatchStatus {
+  SCHEDULED
+  LIVE
+  COMPLETED
+  CANCELLED
+  WALKOVER
+}
+
+enum MatchFormat {
+  SINGLES
+  DOUBLES
+}
+
+enum LeagueMode {
+  TEAM
+  INDIVIDUAL
+}
+
+enum LeagueGender {
+  OPEN
+  MENS_ONLY
+  WOMENS_ONLY
+}
+
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  WAITLISTED
+}
+
+enum FederationLevel {
+  DISTRICT
+  STATE
+  NATIONAL
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+// ============================================
+// USER & AUTH
+// ============================================
+
+model User {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  emailVerified   DateTime?
+  phone           String?   @unique
+  passwordHash    String?
+  image           String?
+  role            UserRole  @default(PLAYER)
+  bio             String?
+  dateOfBirth     DateTime?
+  gender          Gender?
+  city            String?
+  state           String?
+  onboardingDone  Boolean   @default(false)
+  favoriteSports  String[]  @default([])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  accounts           Account[]
+  sessions           Session[]
+  captainOfTeams     Team[]               @relation("TeamCaptain")
+  teamMemberships    TeamPlayer[]
+  operatedLeagues    League[]             @relation("LeagueOperator")
+  createdLeagues     League[]             @relation("LeagueCreator")
+  federationAdmins   FederationAdmin[]
+  registrations      PlayerRegistration[]
+  matchScoresEntered MatchScore[]         @relation("ScoreEnteredBy")
+  lineupEntries      LineupEntry[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([role])
+  @@index([city])
+  @@index([gender])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// SPORTS
+// ============================================
+
+model Sport {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  slug          String   @unique
+  description   String?
+  icon          String?
+  // Default scoring rules for this sport
+  scoringConfig Json
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  leagues     League[]
+  federations Federation[]
+}
+
+// ============================================
+// FEDERATION
+// ============================================
+
+model Federation {
+  id        String          @id @default(cuid())
+  name      String
+  sportId   String
+  level     FederationLevel
+  area      String
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  sport   Sport             @relation(fields: [sportId], references: [id])
+  admins  FederationAdmin[]
+  leagues League[]
+
+  @@unique([sportId, level, area])
+  @@index([sportId])
+}
+
+model FederationAdmin {
+  id           String   @id @default(cuid())
+  userId       String
+  federationId String
+  assignedAt   DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id])
+  federation Federation @relation(fields: [federationId], references: [id])
+
+  @@unique([userId, federationId])
+}
+
+// ============================================
+// LEAGUE & DIVISIONS
+// ============================================
+
+model League {
+  id              String          @id @default(cuid())
+  name            String
+  slug            String          @unique
+  sportId         String
+  operatorId      String
+  createdById     String
+  federationId    String?
+  structure       LeagueStructure
+  mode            LeagueMode      @default(TEAM)
+  genderRestriction LeagueGender  @default(OPEN)
+  status          LeagueStatus    @default(DRAFT)
+  description     String?
+  rules           String?         @db.Text
+  city            String?
+  state           String?
+  venue           String?
+  // Team config
+  maxTeamsPerDiv  Int             @default(8)
+  minTeamSize     Int             @default(2)
+  maxTeamSize     Int             @default(10)
+  // Match config per tie (sport-specific)
+  // e.g. { singlesCount: 3, doublesCount: 2 } for badminton
+  // e.g. { matchesPerTie: 1 } for football
+  matchConfig     Json            @default("{}")
+  // For hybrid: how many teams advance to knockout
+  hybridTopN      Int?
+  // Dates
+  startDate       DateTime?
+  endDate         DateTime?
+  registrationEnd DateTime?
+  // Current round tracker for RR
+  currentRound    Int             @default(0)
+  totalRounds     Int             @default(0)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  sport         Sport                @relation(fields: [sportId], references: [id])
+  operator      User                 @relation("LeagueOperator", fields: [operatorId], references: [id])
+  createdBy     User                 @relation("LeagueCreator", fields: [createdById], references: [id])
+  federation    Federation?          @relation(fields: [federationId], references: [id])
+  divisions     Division[]
+  registrations PlayerRegistration[]
+
+  @@index([sportId])
+  @@index([operatorId])
+  @@index([status])
+  @@index([city])
+  @@index([genderRestriction])
+}
+
+model Division {
+  id        String   @id @default(cuid())
+  name      String
+  leagueId  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  league  League  @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  teams   Team[]
+  ties    Tie[]
+
+  @@unique([leagueId, name])
+  @@index([leagueId])
+}
+
+// ============================================
+// TEAMS & PLAYERS
+// ============================================
+
+model Team {
+  id         String   @id @default(cuid())
+  name       String
+  divisionId String
+  captainId  String
+  seed       Int?     // For knockout seeding (1-4 set by TO)
+  logo       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  division    Division     @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  captain     User         @relation("TeamCaptain", fields: [captainId], references: [id])
+  players     TeamPlayer[]
+  homeTies    Tie[]        @relation("HomeTieTeam")
+  awayTies    Tie[]        @relation("AwayTieTeam")
+  wonTies     Tie[]        @relation("TieWinner")
+  standings   Standing[]
+
+  @@unique([divisionId, name])
+  @@index([divisionId])
+  @@index([captainId])
+}
+
+model TeamPlayer {
+  id       String   @id @default(cuid())
+  teamId   String
+  playerId String
+  joinedAt DateTime @default(now())
+  isActive Boolean  @default(true)
+
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  player User @relation(fields: [playerId], references: [id])
+
+  @@unique([teamId, playerId])
+  @@index([playerId])
+}
+
+// ============================================
+// PLAYER REGISTRATION
+// ============================================
+
+model PlayerRegistration {
+  id             String             @id @default(cuid())
+  leagueId       String
+  playerId       String
+  status         RegistrationStatus @default(PENDING)
+  teamPreference String?
+  notes          String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  league League @relation(fields: [leagueId], references: [id])
+  player User   @relation(fields: [playerId], references: [id])
+
+  @@unique([leagueId, playerId])
+  @@index([leagueId])
+  @@index([playerId])
+}
+
+// ============================================
+// TIES, MATCHES & SCORING
+// ============================================
+
+// A "Tie" is one fixture between two teams in a round (e.g. Team A vs Team B)
+// A Tie contains multiple sub-matches (e.g. 3 singles + 2 doubles)
+model Tie {
+  id          String      @id @default(cuid())
+  divisionId  String
+  homeTeamId  String
+  awayTeamId  String
+  winnerId    String?
+  round       Int
+  tieNumber   Int
+  status      MatchStatus @default(SCHEDULED)
+  isWalkover  Boolean     @default(false)
+  walkoverTeamId String?  // Team that forfeited (if walkover)
+  scheduledAt DateTime?
+  playedAt    DateTime?
+  venue       String?
+  // For knockout brackets
+  nextTieId       String?
+  bracketPosition Int?
+  // Points earned by each team in this tie
+  homePoints  Int         @default(0)
+  awayPoints  Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  division  Division   @relation(fields: [divisionId], references: [id])
+  homeTeam  Team       @relation("HomeTieTeam", fields: [homeTeamId], references: [id])
+  awayTeam  Team       @relation("AwayTieTeam", fields: [awayTeamId], references: [id])
+  winner    Team?      @relation("TieWinner", fields: [winnerId], references: [id])
+  nextTie   Tie?       @relation("BracketProgression", fields: [nextTieId], references: [id])
+  prevTies  Tie[]      @relation("BracketProgression")
+  matches   Match[]
+  lineups   Lineup[]
+
+  @@index([divisionId])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
+  @@index([status])
+  @@index([round])
+}
+
+// A "Match" is a single game within a Tie (e.g. Singles 1, Doubles 2)
+model Match {
+  id          String      @id @default(cuid())
+  tieId       String
+  matchNumber Int         // Order within the tie (1, 2, 3...)
+  format      MatchFormat // SINGLES or DOUBLES
+  status      MatchStatus @default(SCHEDULED)
+  winnerId    String?     // Which team won this specific match
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  tie     Tie          @relation(fields: [tieId], references: [id], onDelete: Cascade)
+  scores  MatchScore[]
+  lineup  LineupEntry[]
+
+  @@index([tieId])
+  @@index([status])
+}
+
+// Score for a single match (with edit tracking)
+model MatchScore {
+  id          String   @id @default(cuid())
+  matchId     String
+  scoreData   Json     // Sport-specific: { sets: [...] } for badminton, { home: 2, away: 1 } for football
+  enteredById String
+  editCount   Int      @default(0) // 0 = initial, 1 = edited once, max 1 edit allowed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  match     Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  enteredBy User  @relation("ScoreEnteredBy", fields: [enteredById], references: [id])
+
+  @@index([matchId])
+}
+
+// ============================================
+// LINEUP (Captain submits before tie)
+// ============================================
+
+// One lineup per team per tie
+model Lineup {
+  id        String   @id @default(cuid())
+  tieId     String
+  teamId    String
+  submitted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tie     Tie           @relation(fields: [tieId], references: [id], onDelete: Cascade)
+  entries LineupEntry[]
+
+  @@unique([tieId, teamId])
+  @@index([tieId])
+}
+
+// Which player plays which match in a tie
+model LineupEntry {
+  id       String @id @default(cuid())
+  lineupId String
+  matchId  String
+  playerId String
+
+  lineup Lineup @relation(fields: [lineupId], references: [id], onDelete: Cascade)
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player User   @relation(fields: [playerId], references: [id])
+
+  @@index([lineupId])
+  @@index([matchId])
+}
+
+// ============================================
+// STANDINGS
+// ============================================
+
+model Standing {
+  id              String   @id @default(cuid())
+  divisionId      String
+  teamId          String
+  tiesPlayed      Int      @default(0)
+  tiesWon         Int      @default(0)
+  tiesLost        Int      @default(0)
+  matchesWon      Int      @default(0) // individual matches won across all ties
+  matchesLost     Int      @default(0)
+  bonusPoints     Int      @default(0) // clean sweep bonuses
+  totalPoints     Int      @default(0) // matchesWon + bonusPoints
+  // Sport specific stats (sets won/lost, points for/against etc)
+  sportStats      Json     @default("{}")
+  rank            Int      @default(0)
+  updatedAt       DateTime @updatedAt
+
+  team     Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([divisionId, teamId])
+  @@index([divisionId])
+  @@index([divisionId, rank])
+  @@index([divisionId, totalPoints])
+}
