@@ -108,6 +108,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
 
         if (!existing) {
+          // Create user without password — they'll set it during onboarding
           const newUser = await db.user.create({
             data: {
               name: user.name!,
@@ -115,6 +116,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               image: user.image,
               emailVerified: new Date(),
               role: "PLAYER",
+              onboardingDone: false,
             },
           });
           await db.account.create({

@@ -28,6 +28,11 @@ export default function OnboardingPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
 
+  // Step 3: Password (for Google users who don't have one yet)
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [needsPassword, setNeedsPassword] = useState(false);
+
   const { data: sports } = trpc.sport.list.useQuery();
 
   const completeMutation = trpc.auth.completeOnboarding.useMutation({
@@ -40,11 +45,18 @@ export default function OnboardingPage() {
     },
   });
 
+  const { data: profile } = trpc.auth.checkNeedsPassword.useQuery(undefined, {
+    enabled: !!session,
+  });
+
   useEffect(() => {
     if (session?.user?.name) {
       setName(session.user.name);
     }
-  }, [session]);
+    if (profile?.needsPassword) {
+      setNeedsPassword(true);
+    }
+  }, [session, profile]);
 
   if (status === "loading") {
     return (
@@ -84,6 +96,16 @@ export default function OnboardingPage() {
       setError("City is required");
       return;
     }
+    if (needsPassword) {
+      if (password.length < 6) {
+        setError("Password must be at least 6 characters");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+    }
 
     setLoading(true);
     setError("");
@@ -94,6 +116,7 @@ export default function OnboardingPage() {
       favoriteSports: selectedSports,
       city: city.trim(),
       state: state.trim(),
+      password: needsPassword ? password : undefined,
     });
   }
 
@@ -111,6 +134,7 @@ export default function OnboardingPage() {
         <div className="flex gap-2">
           <div className={`h-1 flex-1 rounded-full ${step >= 1 ? "bg-brand" : "bg-border"}`} />
           <div className={`h-1 flex-1 rounded-full ${step >= 2 ? "bg-brand" : "bg-border"}`} />
+          {needsPassword && <div className={`h-1 flex-1 rounded-full ${step >= 3 ? "bg-brand" : "bg-border"}`} />}
         </div>
 
         {error && (
@@ -215,6 +239,48 @@ export default function OnboardingPage() {
 
             <div className="flex gap-2">
               <Button variant="ghost" className="flex-1" onClick={() => setStep(1)}>
+                Back
+              </Button>
+              <Button className="flex-1" loading={needsPassword ? false : loading} onClick={() => {
+                if (!city.trim()) { setError("City is required"); return; }
+                if (needsPassword) { setError(""); setStep(3); }
+                else handleSubmit();
+              }}>
+                {needsPassword ? "Continue" : "Get Started"}
+              </Button>
+            </div>
+          </Card>
+        )}
+
+        {/* Step 3: Set Password (Google users only) */}
+        {step === 3 && needsPassword && (
+          <Card className="space-y-4">
+            <h2 className="font-semibold">Set Your Password</h2>
+            <p className="text-sm text-muted-foreground">Create a password so you can also sign in with email.</p>
+            <Input
+              id="password"
+              label="Password"
+              type="password"
+              placeholder="Min. 6 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+            <Input
+              id="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              placeholder="Re-enter password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            {password && confirmPassword && password !== confirmPassword && (
+              <p className="text-sm text-red-500">Passwords do not match</p>
+            )}
+            <div className="flex gap-2">
+              <Button variant="ghost" className="flex-1" onClick={() => setStep(2)}>
                 Back
               </Button>
               <Button className="flex-1" loading={loading} onClick={handleSubmit}>

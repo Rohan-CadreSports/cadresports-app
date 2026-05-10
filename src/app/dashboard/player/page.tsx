@@ -18,9 +18,23 @@ function formatShortDate(date: Date | null): string {
 export default async function PlayerDashboard() {
   const session = await requireAuth();
 
+  if (!session.user.id) {
+    const { redirect } = await import("next/navigation");
+    redirect("/auth/signin");
+  }
+
+  const userId = session.user.id;
+
+  // First get team IDs, then use them for all queries
+  const myTeamPlayers = await db.teamPlayer.findMany({
+    where: { playerId: userId, isActive: true },
+    select: { teamId: true },
+  });
+  const myTeamIds = myTeamPlayers.map((t) => t.teamId);
+
   const [teamMemberships, upcomingTies, registrations] = await Promise.all([
     db.teamPlayer.findMany({
-      where: { playerId: session.user.id, isActive: true },
+      where: { playerId: userId, isActive: true },
       include: {
         team: {
           include: {
@@ -37,12 +51,12 @@ export default async function PlayerDashboard() {
         },
       },
     }),
-    db.tie.findMany({
+    myTeamIds.length > 0 ? db.tie.findMany({
       where: {
         status: "SCHEDULED",
         OR: [
-          { homeTeamId: { in: await db.teamPlayer.findMany({ where: { playerId: session.user.id, isActive: true }, select: { teamId: true } }).then(t => t.map(x => x.teamId)) } },
-          { awayTeamId: { in: await db.teamPlayer.findMany({ where: { playerId: session.user.id, isActive: true }, select: { teamId: true } }).then(t => t.map(x => x.teamId)) } },
+          { homeTeamId: { in: myTeamIds } },
+          { awayTeamId: { in: myTeamIds } },
         ],
       },
       include: {
@@ -52,16 +66,16 @@ export default async function PlayerDashboard() {
       },
       orderBy: [{ round: "asc" }, { tieNumber: "asc" }],
       take: 5,
-    }),
+    }) : Promise.resolve([]),
     db.playerRegistration.findMany({
-      where: { playerId: session.user.id, status: "PENDING" },
+      where: { playerId: userId, status: "PENDING" },
       include: { league: { select: { name: true, slug: true } } },
       orderBy: { createdAt: "desc" },
     }),
   ]);
 
-  const teamIds = teamMemberships.map(t => t.teamId);
-  const isCaptain = teamMemberships.some(t => t.team.captain.id === session.user.id);
+  const teamIds = myTeamIds;
+  const isCaptain = teamMemberships.some(t => t.team.captain.id === userId);
 
   const leagueMap = new Map<string, { leagueName: string; slug: string; city: string | null; sport: string; status: string; teams: typeof teamMemberships }>();
   for (const tm of teamMemberships) {
@@ -189,7 +203,7 @@ export default async function PlayerDashboard() {
                         <div key={tm.id} className="flex items-center justify-between mt-2 py-1.5 px-3 bg-muted/50 rounded-xl">
                           <span className="text-sm font-medium">{tm.team.name}</span>
                           <div className="flex items-center gap-2">
-                            {tm.team.captain.id === session.user.id && (
+                            {tm.team.captain.id === userId && (
                               <Badge variant="warning">Captain</Badge>
                             )}
                             <span className="text-xs text-muted-foreground">{tm.team._count.players}p</span>

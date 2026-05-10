@@ -65,6 +65,14 @@ export const authRouter = router({
     return { onboardingDone: user?.onboardingDone ?? false };
   }),
 
+  checkNeedsPassword: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.db.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: { passwordHash: true },
+    });
+    return { needsPassword: !user?.passwordHash };
+  }),
+
   completeOnboarding: protectedProcedure
     .input(
       z.object({
@@ -74,6 +82,7 @@ export const authRouter = router({
         favoriteSports: z.array(z.string()).default([]),
         city: z.string().min(1).max(100),
         state: z.string().max(100).optional(),
+        password: z.string().min(6).max(128).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -95,17 +104,24 @@ export const authRouter = router({
         throw new TRPCError({ code: "BAD_REQUEST", message: "Date of birth cannot be in the future" });
       }
 
+      const data: Record<string, unknown> = {
+        name: input.name,
+        dateOfBirth: dob,
+        gender: input.gender,
+        favoriteSports: input.favoriteSports,
+        city: input.city,
+        state: input.state || null,
+        onboardingDone: true,
+      };
+
+      // Set password if provided (Google users setting password for first time)
+      if (input.password) {
+        data.passwordHash = await bcrypt.hash(input.password, 12);
+      }
+
       return ctx.db.user.update({
         where: { id: ctx.session.user.id },
-        data: {
-          name: input.name,
-          dateOfBirth: dob,
-          gender: input.gender,
-          favoriteSports: input.favoriteSports,
-          city: input.city,
-          state: input.state || null,
-          onboardingDone: true,
-        },
+        data,
       });
     }),
 
