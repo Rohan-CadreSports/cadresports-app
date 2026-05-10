@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc/client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -19,6 +19,7 @@ export function RegisterButton({
   registrationStatus?: string | null;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -36,10 +37,19 @@ export function RegisterButton({
   });
 
   if (!isLoggedIn) {
+    const signinUrl = `/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`;
+    const signupUrl = `/auth/register?callbackUrl=${encodeURIComponent(pathname)}`;
+
     return (
-      <Link href="/auth/signin">
-        <Button className="w-full" size="lg">Sign in to Register</Button>
-      </Link>
+      <div className="space-y-2">
+        <Link href={signinUrl}>
+          <Button className="w-full" size="lg">Sign in to Register</Button>
+        </Link>
+        <p className="text-center text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link href={signupUrl} className="text-brand font-medium">Sign up</Link>
+        </p>
+      </div>
     );
   }
 

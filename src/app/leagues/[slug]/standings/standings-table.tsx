@@ -66,7 +66,7 @@ export function StandingsTable({ standings }: { standings: StandingItem[] }) {
               <td className="py-4 px-2 text-center text-red-500 text-sm">{s.tiesLost}</td>
               <td className="py-4 px-2 text-center font-medium text-sm">{s.matchesWon}</td>
               <td className="py-4 px-3 text-center">
-                <span className="inline-flex items-center justify-center min-w-[36px] h-8 rounded-xl bg-brand/10 text-brand font-bold text-base">{s.totalPoints}</span>
+                <span className="inline-flex items-center justify-center min-w-[36px] h-8 rounded-xl bg-neutral-100 text-brand font-bold text-base">{s.totalPoints}</span>
               </td>
             </tr>
           ))}

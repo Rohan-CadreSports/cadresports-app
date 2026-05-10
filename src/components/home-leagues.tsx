@@ -108,8 +108,8 @@ function LeagueCard({ league }: { league: LeagueItem }) {
       <div
         className={`relative rounded-2xl overflow-hidden border transition-all duration-200 cursor-pointer h-full press-effect ${
           isLive
-            ? "border-brand/40 bg-gradient-to-br from-brand/5 to-surface shadow-[0_0_20px_rgba(0,150,123,0.08)]"
-            : "border-border-light bg-surface shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:border-brand/30"
+            ? "border-border bg-surface shadow-[var(--shadow-sm)]"
+            : "border-border-light bg-surface shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-sm)]"
         }`}
       >
         <div className={`absolute left-0 top-0 bottom-0 w-1 ${isLive ? "bg-brand" : "bg-blue-500"}`} />

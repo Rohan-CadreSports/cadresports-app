@@ -76,7 +76,7 @@ export default async function OperatorDashboard() {
               <Link key={league.id} href={`/dashboard/operator/league/${league.id}`}>
                 <div className={`relative rounded-2xl border overflow-hidden press-effect mb-2 ${
                   isLive
-                    ? "border-brand/30 bg-gradient-to-r from-brand/5 to-surface"
+                    ? "border-border bg-surface"
                     : "border-border-light bg-surface"
                 } shadow-[var(--shadow-xs)]`}>
                   <div className={`absolute left-0 top-0 bottom-0 w-1 ${isLive ? "bg-brand" : isOpen ? "bg-blue-500" : "bg-muted-foreground/30"}`} />

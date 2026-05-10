@@ -20,11 +20,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ].join(" ");
 
     const variants = {
-      primary: "bg-brand text-white shadow-[var(--shadow-sm)] hover:bg-brand-dark hover:shadow-[var(--shadow-md)]",
-      secondary: "bg-dark text-white shadow-[var(--shadow-sm)] hover:bg-dark/90",
-      outline: "border border-border text-foreground hover:bg-muted hover:border-brand hover:text-brand",
-      ghost: "text-muted-foreground hover:bg-muted hover:text-foreground",
-      danger: "bg-red-600 text-white shadow-[var(--shadow-sm)] hover:bg-red-700",
+      primary: "bg-brand text-white hover:opacity-90",
+      secondary: "bg-dark text-white hover:opacity-90",
+      outline: "border border-border text-foreground hover:bg-muted/80",
+      ghost: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+      danger: "bg-red-500 text-white hover:opacity-90",
     };
 
     const sizes = {

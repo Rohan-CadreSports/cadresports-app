@@ -124,7 +124,7 @@ export default async function PlayerDashboard() {
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand rounded-l-2xl" />
                     <p className="text-xs text-muted-foreground">{tie.division.league.name} · Round {tie.round}</p>
                     <div className="flex items-center justify-between mt-1">
-                      <span className="text-sm font-semibold text-brand">{myTeam}</span>
+                      <span className="text-sm font-semibold">{myTeam}</span>
                       <span className="text-xs text-muted-foreground">vs</span>
                       <span className="text-sm font-semibold">{opponent}</span>
                     </div>
@@ -162,7 +162,7 @@ export default async function PlayerDashboard() {
               return (
                 <Link key={slug} href={`/leagues/${slug}`}>
                   <div className={`relative rounded-2xl border overflow-hidden press-effect mb-2 shadow-[var(--shadow-xs)] ${
-                    isLive ? "border-brand/30 bg-gradient-to-r from-brand/5 to-surface" : "border-border-light bg-surface"
+                    isLive ? "border-border bg-surface" : "border-border-light bg-surface"
                   }`}>
                     <div className={`absolute left-0 top-0 bottom-0 w-1 ${isLive ? "bg-brand" : "bg-blue-500"}`} />
                     <div className="p-4 pl-5">

@@ -98,8 +98,8 @@ export default async function LeaguesPage({
                 <div
                   className={`relative rounded-2xl overflow-hidden border transition-all duration-200 cursor-pointer press-effect mb-3 ${
                     isLive
-                      ? "border-brand/40 bg-gradient-to-r from-brand/5 via-surface to-surface shadow-[0_0_20px_rgba(0,150,123,0.08)]"
-                      : "border-border-light bg-surface shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:border-brand/30"
+                      ? "border-border bg-surface shadow-[var(--shadow-sm)]"
+                      : "border-border-light bg-surface shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-sm)]"
                   }`}
                 >
                   {/* Brand accent bar */}

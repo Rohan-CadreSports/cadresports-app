@@ -136,15 +136,15 @@ export default async function LeagueDetailPage({
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-surface border border-border-light rounded-2xl p-3 text-center shadow-[var(--shadow-xs)]">
-          <p className="text-2xl font-bold text-brand">{league._count.registrations}</p>
+          <p className="text-2xl font-bold text-foreground">{league._count.registrations}</p>
           <p className="text-xs text-muted-foreground">Players</p>
         </div>
         <div className="bg-surface border border-border-light rounded-2xl p-3 text-center shadow-[var(--shadow-xs)]">
-          <p className="text-2xl font-bold text-brand">{league.divisions.length}</p>
+          <p className="text-2xl font-bold text-foreground">{league.divisions.length}</p>
           <p className="text-xs text-muted-foreground">Divisions</p>
         </div>
         <div className="bg-surface border border-border-light rounded-2xl p-3 text-center shadow-[var(--shadow-xs)]">
-          <p className="text-2xl font-bold text-brand">{totalTeams}</p>
+          <p className="text-2xl font-bold text-foreground">{totalTeams}</p>
           <p className="text-xs text-muted-foreground">Teams</p>
         </div>
       </div>
@@ -159,7 +159,7 @@ export default async function LeagueDetailPage({
         ].map((nav) => (
           <Link key={nav.href} href={nav.href}>
             <div className="bg-surface border border-border-light rounded-2xl p-3 flex items-center gap-3 press-effect shadow-[var(--shadow-xs)]">
-              <div className="w-9 h-9 bg-brand/10 rounded-xl flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 bg-neutral-100 rounded-xl flex items-center justify-center shrink-0">
                 <nav.icon className="w-4 h-4 text-brand" />
               </div>
               <span className="text-sm font-medium flex-1">{nav.label}</span>

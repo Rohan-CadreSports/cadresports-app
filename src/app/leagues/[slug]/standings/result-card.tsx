@@ -55,7 +55,7 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
   return (
     <div
       className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
-        open ? "border-brand/30 shadow-[var(--shadow-md)]" : "border-border-light bg-surface shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)]"
+        open ? "border-border shadow-[var(--shadow-md)]" : "border-border-light bg-surface shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)]"
       }`}
     >
       <button
