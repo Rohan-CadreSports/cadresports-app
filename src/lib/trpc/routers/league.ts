@@ -149,12 +149,22 @@ export const leagueRouter = router({
       // Validate match config
       const sc = input.matchConfig.singlesCount ?? 0;
       const dc = input.matchConfig.doublesCount ?? 0;
+      const pps = input.matchConfig.playersPerSide ?? 0;
       const mpt = input.matchConfig.matchesPerTie ?? (sc + dc || 1);
       if (mpt < 1) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Must have at least 1 match per tie" });
       }
-      if (input.mode === "TEAM" && mpt % 2 === 0) {
+      if (input.mode === "TEAM" && mpt > 1 && mpt % 2 === 0) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Total matches per tie must be an odd number for team mode" });
+      }
+
+      // Validate min team size against match config
+      if (pps > 0 && input.minTeamSize < pps) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: `Minimum team size cannot be less than ${pps} (players per side)` });
+      }
+      const minFromMatches = Math.max(sc, dc * 2);
+      if (minFromMatches > 0 && input.minTeamSize < minFromMatches) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: `Minimum team size must be at least ${minFromMatches} based on match config` });
       }
 
       const slug = slugify(input.name) + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);

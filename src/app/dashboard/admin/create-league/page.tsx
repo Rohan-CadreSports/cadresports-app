@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,6 +66,25 @@ export default function AdminCreateLeaguePage() {
   const { data: federations } = trpc.admin.listFederations.useQuery(
     sportId ? { sportId } : undefined
   );
+
+  // Auto-calculate min team size from match config
+  useEffect(() => {
+    const selectedSport = sports?.find((s) => s.id === sportId);
+    const isFootball = selectedSport?.slug === "football";
+
+    if (isFootball) {
+      const pps = parseInt(playersPerSide) || 11;
+      setMinTeamSize(String(pps));
+      if (parseInt(maxTeamSize) < pps) setMaxTeamSize(String(pps + 5));
+    } else {
+      const sc = parseInt(singlesCount) || 0;
+      const dc = parseInt(doublesCount) || 0;
+      // Need at least enough players: max(singles, doubles*2) since same player can play both
+      const minNeeded = Math.max(sc, dc * 2, 2);
+      setMinTeamSize(String(minNeeded));
+      if (parseInt(maxTeamSize) < minNeeded) setMaxTeamSize(String(minNeeded + 4));
+    }
+  }, [sportId, sports, singlesCount, doublesCount, playersPerSide]);
 
   const createMutation = trpc.league.create.useMutation({
     onSuccess: () => {
