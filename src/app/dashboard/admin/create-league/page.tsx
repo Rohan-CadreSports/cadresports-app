@@ -55,6 +55,7 @@ export default function AdminCreateLeaguePage() {
   // 11. Match Config
   const [singlesCount, setSinglesCount] = useState("0");
   const [doublesCount, setDoublesCount] = useState("0");
+  const [playersPerSide, setPlayersPerSide] = useState("11");
 
   // 12. Team Size
   const [minTeamSize, setMinTeamSize] = useState("2");
@@ -112,17 +113,24 @@ export default function AdminCreateLeaguePage() {
       return;
     }
 
-    const sc = parseInt(singlesCount) || 0;
-    const dc = parseInt(doublesCount) || 0;
-    const totalMatches = sc + dc;
+    const selectedSport = sports?.find((s) => s.id === sportId);
+    const isFootballType = selectedSport?.slug === "football";
 
-    if (mode === "TEAM" && totalMatches > 0 && totalMatches % 2 === 0) {
+    const sc = isFootballType ? 0 : parseInt(singlesCount) || 0;
+    const dc = isFootballType ? 0 : parseInt(doublesCount) || 0;
+    const totalMatches = isFootballType ? 1 : sc + dc;
+
+    if (!isFootballType && mode === "TEAM" && totalMatches > 0 && totalMatches % 2 === 0) {
       setError("Total matches per tie must be an odd number for team mode");
       return;
     }
 
     setLoading(true);
     setError("");
+
+    const matchConfig = isFootballType
+      ? { matchesPerTie: 1, playersPerSide: parseInt(playersPerSide) || 11 }
+      : { singlesCount: sc, doublesCount: dc, matchesPerTie: sc + dc > 0 ? sc + dc : 1 };
 
     createMutation.mutate({
       name,
@@ -138,11 +146,7 @@ export default function AdminCreateLeaguePage() {
       maxTeamsPerDiv: parseInt(maxTeamsPerDiv) || 8,
       minTeamSize: parseInt(minTeamSize) || 2,
       maxTeamSize: parseInt(maxTeamSize) || 10,
-      matchConfig: {
-        singlesCount: sc,
-        doublesCount: dc,
-        matchesPerTie: sc + dc > 0 ? sc + dc : 1,
-      },
+      matchConfig,
       hybridTopN: structure === "HYBRID" ? parseInt(hybridTopN) || 4 : undefined,
       startDate: startDate || undefined,
       endDate: endDate || undefined,
@@ -428,50 +432,81 @@ export default function AdminCreateLeaguePage() {
           )}
         </Card>
 
-        {/* 9. Match Config */}
-        <Card className="space-y-4">
-          <CardHeader>
-            <CardTitle>Match Config</CardTitle>
-            <CardDescription>
-              For badminton-type sports, set how many singles and doubles matches make up each tie.
-              Total should be odd for team mode.
-            </CardDescription>
-          </CardHeader>
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              id="singlesCount"
-              label="Singles Matches"
-              type="number"
-              min={0}
-              max={10}
-              value={singlesCount}
-              onChange={(e) => setSinglesCount(e.target.value)}
-            />
-            <Input
-              id="doublesCount"
-              label="Doubles Matches"
-              type="number"
-              min={0}
-              max={10}
-              value={doublesCount}
-              onChange={(e) => setDoublesCount(e.target.value)}
-            />
-          </div>
-          {(parseInt(singlesCount) || 0) + (parseInt(doublesCount) || 0) > 0 && (
-            <p className="text-sm text-muted-foreground">
-              Total matches per tie:{" "}
-              <span className="font-medium text-foreground">
-                {(parseInt(singlesCount) || 0) + (parseInt(doublesCount) || 0)}
-              </span>
-              {mode === "TEAM" &&
-                ((parseInt(singlesCount) || 0) + (parseInt(doublesCount) || 0)) % 2 === 0 && (
-                  <span className="text-red-500 ml-2">
-                    (Should be odd for team mode)
+        {/* 9. Match Config — sport-specific */}
+        {sportId && (() => {
+          const selectedSport = sports?.find((s) => s.id === sportId);
+          const isFootball = selectedSport?.slug === "football";
+
+          if (isFootball) {
+            return (
+              <Card className="space-y-4">
+                <CardHeader>
+                  <CardTitle>Match Config</CardTitle>
+                  <CardDescription>Set the number of players per side for this league.</CardDescription>
+                </CardHeader>
+                <Select
+                  id="playersPerSide"
+                  label="Players per Side"
+                  options={[
+                    { value: "3", label: "3v3" },
+                    { value: "5", label: "5v5" },
+                    { value: "6", label: "6v6" },
+                    { value: "7", label: "7v7" },
+                    { value: "8", label: "8v8" },
+                    { value: "9", label: "9v9" },
+                    { value: "10", label: "10v10" },
+                    { value: "11", label: "11v11" },
+                  ]}
+                  value={playersPerSide}
+                  onChange={(e) => setPlayersPerSide(e.target.value)}
+                />
+              </Card>
+            );
+          }
+
+          return (
+            <Card className="space-y-4">
+              <CardHeader>
+                <CardTitle>Match Config</CardTitle>
+                <CardDescription>
+                  Set how many singles and doubles matches make up each tie. Total should be odd for team mode.
+                </CardDescription>
+              </CardHeader>
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  id="singlesCount"
+                  label="Singles Matches"
+                  type="number"
+                  min={0}
+                  max={10}
+                  value={singlesCount}
+                  onChange={(e) => setSinglesCount(e.target.value)}
+                />
+                <Input
+                  id="doublesCount"
+                  label="Doubles Matches"
+                  type="number"
+                  min={0}
+                  max={10}
+                  value={doublesCount}
+                  onChange={(e) => setDoublesCount(e.target.value)}
+                />
+              </div>
+              {(parseInt(singlesCount) || 0) + (parseInt(doublesCount) || 0) > 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Total matches per tie:{" "}
+                  <span className="font-medium text-foreground">
+                    {(parseInt(singlesCount) || 0) + (parseInt(doublesCount) || 0)}
                   </span>
-                )}
-            </p>
-          )}
-        </Card>
+                  {mode === "TEAM" &&
+                    ((parseInt(singlesCount) || 0) + (parseInt(doublesCount) || 0)) % 2 === 0 && (
+                      <span className="text-red-500 ml-2">(Should be odd for team mode)</span>
+                    )}
+                </p>
+              )}
+            </Card>
+          );
+        })()}
 
         {/* 10. Team Size (only for TEAM mode) */}
         {mode === "TEAM" && (

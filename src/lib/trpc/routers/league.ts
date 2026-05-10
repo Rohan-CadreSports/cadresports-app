@@ -109,6 +109,7 @@ export const leagueRouter = router({
           singlesCount: z.number().min(0).max(10).optional(),
           doublesCount: z.number().min(0).max(10).optional(),
           matchesPerTie: z.number().min(1).max(10).optional(),
+          playersPerSide: z.number().min(3).max(11).optional(),
         }).default({}),
         hybridTopN: z.number().min(2).max(32).optional(),
         startDate: z.string().optional(),
