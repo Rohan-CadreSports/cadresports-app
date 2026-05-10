@@ -147,7 +147,7 @@ export default async function MatchesPage({
                                 {tie.matches.map((match) => (
                                   <div key={match.id} className="flex items-center justify-between py-1 px-2 bg-muted/50 rounded-lg text-xs">
                                     <span className="text-muted-foreground">
-                                      {match.format === "SINGLES" ? "S" : "D"}{match.matchNumber}
+                                      {league.sport.slug === "football" ? "Match" : `${match.format === "SINGLES" ? "S" : "D"}${match.matchNumber}`}
                                     </span>
                                     {match.status === "COMPLETED" && match.scores[0] ? (
                                       <span className="font-medium">
@@ -160,7 +160,7 @@ export default async function MatchesPage({
                                       <MatchScoreEntry
                                         matchId={match.id}
                                         sportSlug={league.sport.slug}
-                                        matchLabel={`${match.format === "SINGLES" ? "Singles" : "Doubles"} ${match.matchNumber}`}
+                                        matchLabel={league.sport.slug === "football" ? "Match Score" : `${match.format === "SINGLES" ? "Singles" : "Doubles"} ${match.matchNumber}`}
                                       />
                                     ) : (
                                       <span className="text-muted-foreground">

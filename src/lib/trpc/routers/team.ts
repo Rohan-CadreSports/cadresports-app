@@ -244,7 +244,7 @@ export const teamRouter = router({
         entries: z.array(
           z.object({
             matchId: z.string(),
-            playerIds: z.array(z.string()).min(1).max(2),
+            playerIds: z.array(z.string()).min(1).max(30),
           })
         ),
       })
@@ -268,16 +268,25 @@ export const teamRouter = router({
         }
       }
       // Validate correct player count per match format
+      // Get sport to determine if it's football (team lineup) or badminton (individual assignment)
+      const tieWithSport = await ctx.db.tie.findUniqueOrThrow({
+        where: { id: input.tieId },
+        select: { division: { select: { league: { select: { sport: { select: { slug: true } } } } } } },
+      });
+      const isFootball = tieWithSport.division.league.sport.slug === "football";
+
       for (const entry of input.entries) {
         const match = tieWithMatches.matches.find((m) => m.id === entry.matchId);
         if (!match) {
           throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid match ID in lineup" });
         }
-        if (match.format === "DOUBLES" && entry.playerIds.length < 2) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "Doubles matches require 2 players" });
-        }
-        if (match.format === "SINGLES" && entry.playerIds.length !== 1) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "Singles matches require exactly 1 player" });
+        if (!isFootball) {
+          if (match.format === "DOUBLES" && entry.playerIds.length < 2) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Doubles matches require 2 players" });
+          }
+          if (match.format === "SINGLES" && entry.playerIds.length !== 1) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Singles matches require exactly 1 player" });
+          }
         }
       }
 

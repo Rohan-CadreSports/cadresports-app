@@ -168,11 +168,13 @@ export default async function MyMatchesPage({
                     <span className="text-xs text-muted-foreground">vs</span>
                     <span className="text-sm font-medium">{opponent}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    {tie.matches.length} match{tie.matches.length !== 1 ? "es" : ""}:{" "}
-                    {tie.matches.filter((m) => m.format === "SINGLES").length}S +{" "}
-                    {tie.matches.filter((m) => m.format === "DOUBLES").length}D
-                  </p>
+                  {league.sport.slug !== "football" && (
+                    <p className="text-xs text-muted-foreground mb-2">
+                      {tie.matches.length} match{tie.matches.length !== 1 ? "es" : ""}:{" "}
+                      {tie.matches.filter((m) => m.format === "SINGLES").length}S +{" "}
+                      {tie.matches.filter((m) => m.format === "DOUBLES").length}D
+                    </p>
+                  )}
                   {tie.scheduledAt && (
                     <p className="text-xs text-muted-foreground flex items-center gap-1 mb-2">
                       <Calendar className="w-3 h-3" />
@@ -189,6 +191,8 @@ export default async function MyMatchesPage({
                       teamId={myTeamId}
                       matches={tie.matches}
                       roster={thisTeamRoster}
+                      sportSlug={league.sport.slug}
+                      matchConfig={league.matchConfig as Record<string, number>}
                     />
                   )}
                   {isCaptainOfThisTeam && lineupSubmitted && (
