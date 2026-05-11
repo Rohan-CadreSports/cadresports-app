@@ -17,11 +17,20 @@ export interface BadmintonScore {
 }
 
 // Football types
+export interface FootballCard {
+  playerName: string;
+  type: "yellow" | "red";
+  minute?: number;
+}
+
 export interface FootballScore {
   home: number;
   away: number;
-  homeScorers?: string[];
-  awayScorers?: string[];
+  extraTime?: boolean;
+  homeET?: number; // goals in extra time
+  awayET?: number;
+  homeCards?: FootballCard[];
+  awayCards?: FootballCard[];
 }
 
 /**

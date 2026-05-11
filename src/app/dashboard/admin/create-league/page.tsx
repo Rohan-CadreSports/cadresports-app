@@ -56,6 +56,7 @@ export default function AdminCreateLeaguePage() {
   const [singlesCount, setSinglesCount] = useState("0");
   const [doublesCount, setDoublesCount] = useState("0");
   const [playersPerSide, setPlayersPerSide] = useState("11");
+  const [matchDuration, setMatchDuration] = useState("90");
 
   // 12. Team Size
   const [minTeamSize, setMinTeamSize] = useState("2");
@@ -148,7 +149,7 @@ export default function AdminCreateLeaguePage() {
     setError("");
 
     const matchConfig = isFootballType
-      ? { matchesPerTie: 1, playersPerSide: parseInt(playersPerSide) || 11 }
+      ? { matchesPerTie: 1, playersPerSide: parseInt(playersPerSide) || 11, matchDuration: parseInt(matchDuration) || 90 }
       : { singlesCount: sc, doublesCount: dc, matchesPerTie: sc + dc > 0 ? sc + dc : 1 };
 
     createMutation.mutate({
@@ -461,24 +462,43 @@ export default function AdminCreateLeaguePage() {
               <Card className="space-y-4">
                 <CardHeader>
                   <CardTitle>Match Config</CardTitle>
-                  <CardDescription>Set the number of players per side for this league.</CardDescription>
+                  <CardDescription>Set format and duration for football matches.</CardDescription>
                 </CardHeader>
-                <Select
-                  id="playersPerSide"
-                  label="Players per Side"
-                  options={[
-                    { value: "3", label: "3v3" },
-                    { value: "5", label: "5v5" },
-                    { value: "6", label: "6v6" },
-                    { value: "7", label: "7v7" },
-                    { value: "8", label: "8v8" },
-                    { value: "9", label: "9v9" },
-                    { value: "10", label: "10v10" },
-                    { value: "11", label: "11v11" },
-                  ]}
-                  value={playersPerSide}
-                  onChange={(e) => setPlayersPerSide(e.target.value)}
-                />
+                <div className="grid grid-cols-2 gap-3">
+                  <Select
+                    id="playersPerSide"
+                    label="Players per Side"
+                    options={[
+                      { value: "3", label: "3v3" },
+                      { value: "4", label: "4v4" },
+                      { value: "5", label: "5v5" },
+                      { value: "6", label: "6v6" },
+                      { value: "7", label: "7v7" },
+                      { value: "8", label: "8v8" },
+                      { value: "9", label: "9v9" },
+                      { value: "10", label: "10v10" },
+                      { value: "11", label: "11v11" },
+                    ]}
+                    value={playersPerSide}
+                    onChange={(e) => setPlayersPerSide(e.target.value)}
+                  />
+                  <Select
+                    id="matchDuration"
+                    label="Match Duration"
+                    options={[
+                      { value: "20", label: "20 mins" },
+                      { value: "30", label: "30 mins" },
+                      { value: "40", label: "40 mins" },
+                      { value: "45", label: "45 mins" },
+                      { value: "60", label: "60 mins" },
+                      { value: "70", label: "70 mins" },
+                      { value: "80", label: "80 mins" },
+                      { value: "90", label: "90 mins" },
+                    ]}
+                    value={matchDuration}
+                    onChange={(e) => setMatchDuration(e.target.value)}
+                  />
+                </div>
               </Card>
             );
           }
