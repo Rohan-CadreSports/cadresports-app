@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-05-11
 **Total tickets:** 32
-**Fixed:** 0 | **In Progress:** 0 | **Open:** 32
+**Fixed:** 3 | **In Progress:** 1 | **Open:** 28
 
 ---
 
@@ -17,7 +17,7 @@
 - **Files:** `src/lib/auth.ts` (phone credentials provider)
 
 ### T-002: Add password reset flow
-- **Status:** OPEN
+- **Status:** FIXED (2026-05-11)
 - **Priority:** CRITICAL
 - **Description:** If a user forgets their password, there is no way to recover their account. Complete dead end.
 - **Fix:** Add /auth/forgot-password page → sends email with reset link → /auth/reset-password?token=xxx → set new password
@@ -25,7 +25,7 @@
 - **Files:** New pages + new tRPC endpoints + email sending
 
 ### T-003: Add email verification on signup
-- **Status:** OPEN
+- **Status:** FIXED (2026-05-11)
 - **Priority:** CRITICAL
 - **Description:** Anyone can register with any email. No verification that they own it. Could impersonate others.
 - **Fix:** On register, send verification email with link. Mark emailVerified only after clicking. Block login until verified.
@@ -77,7 +77,7 @@
 - **Files:** `src/lib/trpc/routers/match.ts`
 
 ### T-009: Global error boundary
-- **Status:** OPEN
+- **Status:** FIXED (2026-05-11)
 - **Priority:** HIGH
 - **Description:** When a page crashes, users see a white screen or cryptic error. No friendly message, no recovery.
 - **Fix:** Add Next.js error.tsx at root and per-route. Show "Something went wrong" with retry button. Log errors to monitoring service.
@@ -282,7 +282,9 @@
 
 | Ticket | Description | Completed | Notes |
 |--------|-------------|-----------|-------|
-| — | None yet | — | — |
+| T-002 | Password reset flow | 2026-05-11 | Forgot password page, reset page, email with token, 1hr expiry |
+| T-003 | Email verification | 2026-05-11 | Verification email, verify-email page, token-based. Needs Resend API key |
+| T-009 | Global error boundary | 2026-05-11 | error.tsx + not-found.tsx with friendly messages and retry |
 
 ---
 
