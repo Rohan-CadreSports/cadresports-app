@@ -35,7 +35,7 @@
 ### Resend (Email Service)
 - **Dashboard:** https://resend.com
 - **Account:** rohangurbani77@gmail.com
-- **API Key:** (to be added)
+- **API Key:** re_NkWayMQC_... (configured)
 - **Used for:** Password reset, email verification, notifications
 
 ### Twilio / MSG91 (Phone OTP)
@@ -65,7 +65,7 @@ NEXTAUTH_URL ✓
 AUTH_TRUST_HOST ✓
 GOOGLE_CLIENT_ID ✓
 GOOGLE_CLIENT_SECRET ✓
-RESEND_API_KEY (to be added)
+RESEND_API_KEY ✓
 ```
 
 ---
