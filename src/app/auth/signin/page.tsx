@@ -99,7 +99,12 @@ export default function SignInPage() {
           {tab === "email" && (
             <form onSubmit={handleEmailSignIn} className="space-y-4">
               <Input id="email" label="Email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <Input id="password" label="Password" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <div>
+                <Input id="password" label="Password" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <div className="text-right mt-1">
+                  <Link href="/auth/forgot-password" className="text-xs text-brand font-medium inline-action">Forgot password?</Link>
+                </div>
+              </div>
               <Button type="submit" className="w-full h-12" loading={loading}>Sign In</Button>
             </form>
           )}

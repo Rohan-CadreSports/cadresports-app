@@ -2,6 +2,8 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../server";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/email";
 
 export const authRouter = router({
   register: publicProcedure
@@ -156,5 +158,130 @@ export const authRouter = router({
           phone,
         },
       });
+    }),
+
+  // T-002: Password reset — request
+  requestPasswordReset: publicProcedure
+    .input(z.object({ email: z.string().email() }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({ where: { email: input.email } });
+      // Always return success (don't reveal if email exists)
+      if (!user) return { success: true };
+
+      // Delete old tokens for this email
+      await ctx.db.verificationToken.deleteMany({
+        where: { identifier: `reset:${input.email}` },
+      });
+
+      // Create token (1 hour expiry)
+      const token = crypto.randomBytes(32).toString("hex");
+      await ctx.db.verificationToken.create({
+        data: {
+          identifier: `reset:${input.email}`,
+          token,
+          expires: new Date(Date.now() + 60 * 60 * 1000),
+        },
+      });
+
+      try {
+        await sendPasswordResetEmail(input.email, token);
+      } catch {
+        // Email service might not be configured yet — don't crash
+      }
+
+      return { success: true };
+    }),
+
+  // T-002: Password reset — verify token and set new password
+  resetPassword: publicProcedure
+    .input(z.object({
+      token: z.string(),
+      newPassword: z.string().min(6).max(128),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const record = await ctx.db.verificationToken.findFirst({
+        where: {
+          token: input.token,
+          identifier: { startsWith: "reset:" },
+          expires: { gt: new Date() },
+        },
+      });
+
+      if (!record) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired reset link" });
+      }
+
+      const email = record.identifier.replace("reset:", "");
+      const passwordHash = await bcrypt.hash(input.newPassword, 12);
+
+      await ctx.db.user.update({
+        where: { email },
+        data: { passwordHash },
+      });
+
+      // Clean up token
+      await ctx.db.verificationToken.delete({
+        where: { identifier_token: { identifier: record.identifier, token: input.token } },
+      });
+
+      return { success: true };
+    }),
+
+  // T-003: Send verification email
+  sendVerification: protectedProcedure
+    .mutation(async ({ ctx }) => {
+      const user = await ctx.db.user.findUniqueOrThrow({ where: { id: ctx.session.user.id } });
+      if (user.emailVerified) return { success: true, alreadyVerified: true };
+
+      await ctx.db.verificationToken.deleteMany({
+        where: { identifier: `verify:${user.email}` },
+      });
+
+      const token = crypto.randomBytes(32).toString("hex");
+      await ctx.db.verificationToken.create({
+        data: {
+          identifier: `verify:${user.email}`,
+          token,
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        },
+      });
+
+      try {
+        await sendVerificationEmail(user.email, token);
+      } catch {
+        // Email service might not be configured
+      }
+
+      return { success: true };
+    }),
+
+  // T-003: Verify email token
+  verifyEmail: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const record = await ctx.db.verificationToken.findFirst({
+        where: {
+          token: input.token,
+          identifier: { startsWith: "verify:" },
+          expires: { gt: new Date() },
+        },
+      });
+
+      if (!record) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired verification link" });
+      }
+
+      const email = record.identifier.replace("verify:", "");
+
+      await ctx.db.user.update({
+        where: { email },
+        data: { emailVerified: new Date() },
+      });
+
+      await ctx.db.verificationToken.delete({
+        where: { identifier_token: { identifier: record.identifier, token: input.token } },
+      });
+
+      return { success: true };
     }),
 });
