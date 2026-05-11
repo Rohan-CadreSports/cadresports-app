@@ -43,8 +43,12 @@ function formatScore(scoreData: unknown, sportSlug: string): string {
     if (bd.sets) return bd.sets.map((s) => `${s.home}-${s.away}`).join(", ");
   }
   if (sportSlug === "football") {
-    const fb = data as { home?: number; away?: number };
-    return `${fb.home ?? 0}-${fb.away ?? 0}`;
+    const fb = data as { home?: number; away?: number; extraTime?: boolean; homeET?: number; awayET?: number };
+    let score = `${fb.home ?? 0}-${fb.away ?? 0}`;
+    if (fb.extraTime && (fb.homeET || fb.awayET)) {
+      score += ` (ET: ${fb.homeET ?? 0}-${fb.awayET ?? 0})`;
+    }
+    return score;
   }
   return "-";
 }
@@ -140,6 +144,25 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
                     ))}
                   </div>
                 </div>
+
+                {/* Football cards display */}
+                {sportSlug === "football" && score && (() => {
+                  const fb = score.scoreData as { homeCards?: { playerName: string; type: string; minute?: number }[]; awayCards?: { playerName: string; type: string; minute?: number }[] };
+                  const allCards = [
+                    ...(fb.homeCards || []).map((c) => ({ ...c, team: tie.homeTeam.name })),
+                    ...(fb.awayCards || []).map((c) => ({ ...c, team: tie.awayTeam.name })),
+                  ];
+                  if (allCards.length === 0) return null;
+                  return (
+                    <div className="mt-2 pt-2 border-t border-border-light space-y-1">
+                      {allCards.map((c, i) => (
+                        <p key={i} className="text-xs text-muted-foreground">
+                          {c.type === "red" ? "🔴" : "🟡"} {c.playerName} ({c.team}){c.minute ? ` ${c.minute}'` : ""}
+                        </p>
+                      ))}
+                    </div>
+                  );
+                })()}
               </div>
             );
           })}

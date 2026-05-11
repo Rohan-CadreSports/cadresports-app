@@ -6,21 +6,25 @@ import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
 import { useRouter } from "next/navigation";
 
+interface TeamInfo {
+  id: string;
+  name: string;
+  players: { id: string; name: string }[];
+}
+
 interface Props {
   matchId: string;
   sportSlug: string;
   matchLabel: string;
+  teams?: TeamInfo[];
 }
 
-export function MatchScoreEntry({ matchId, sportSlug, matchLabel }: Props) {
+export function MatchScoreEntry({ matchId, sportSlug, matchLabel, teams }: Props) {
   const [open, setOpen] = useState(false);
 
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        className="text-brand text-xs font-medium hover:underline"
-      >
+      <button onClick={() => setOpen(true)} className="text-brand text-xs font-medium hover:underline inline-action">
         Enter Score
       </button>
     );
@@ -31,7 +35,7 @@ export function MatchScoreEntry({ matchId, sportSlug, matchLabel }: Props) {
   }
 
   if (sportSlug === "football") {
-    return <FootballScoreForm matchId={matchId} label={matchLabel} onClose={() => setOpen(false)} />;
+    return <FootballScoreForm matchId={matchId} label={matchLabel} teams={teams || []} onClose={() => setOpen(false)} />;
   }
 
   return <p className="text-xs text-red-500">Scoring not configured</p>;
@@ -64,10 +68,10 @@ function BadmintonScoreForm({ matchId, label, onClose }: { matchId: string; labe
       ))}
       <div className="flex justify-center gap-2 text-xs">
         {sets.length < 3 && (
-          <button type="button" onClick={() => setSets([...sets, { home: "", away: "" }])} className="text-brand font-medium">+ Set 3</button>
+          <button type="button" onClick={() => setSets([...sets, { home: "", away: "" }])} className="text-brand font-medium inline-action">+ Set 3</button>
         )}
         {sets.length === 3 && (
-          <button type="button" onClick={() => setSets(sets.slice(0, 2))} className="text-red-500 font-medium">- Set 3</button>
+          <button type="button" onClick={() => setSets(sets.slice(0, 2))} className="text-red-500 font-medium inline-action">- Set 3</button>
         )}
       </div>
       {error && <p className="text-xs text-red-500">{error}</p>}
@@ -91,28 +95,33 @@ function BadmintonScoreForm({ matchId, label, onClose }: { matchId: string; labe
 
 interface CardEntry {
   playerName: string;
+  playerId: string;
+  teamId: string;
   type: "yellow" | "red";
   minute?: number;
 }
 
-function FootballScoreForm({ matchId, label, onClose }: { matchId: string; label: string; onClose: () => void }) {
+function FootballScoreForm({ matchId, label, teams, onClose }: { matchId: string; label: string; teams: TeamInfo[]; onClose: () => void }) {
   const router = useRouter();
   const [homeGoals, setHomeGoals] = useState("");
   const [awayGoals, setAwayGoals] = useState("");
   const [extraTime, setExtraTime] = useState(false);
   const [homeET, setHomeET] = useState("");
   const [awayET, setAwayET] = useState("");
-  const [homeCards, setHomeCards] = useState<CardEntry[]>([]);
-  const [awayCards, setAwayCards] = useState<CardEntry[]>([]);
+  const [cards, setCards] = useState<CardEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Card input state
-  const [cardSide, setCardSide] = useState<"home" | "away">("home");
-  const [cardPlayer, setCardPlayer] = useState("");
+  // Card form
+  const [showCardForm, setShowCardForm] = useState(false);
+  const [cardTeamId, setCardTeamId] = useState("");
+  const [cardPlayerId, setCardPlayerId] = useState("");
   const [cardType, setCardType] = useState<"yellow" | "red">("yellow");
   const [cardMinute, setCardMinute] = useState("");
-  const [showCardForm, setShowCardForm] = useState(false);
+
+  const selectedTeamForCard = teams.find((t) => t.id === cardTeamId);
+  const homeTeam = teams[0];
+  const awayTeam = teams[1];
 
   const submitScore = trpc.match.submitScore.useMutation({
     onSuccess: () => { router.refresh(); setLoading(false); },
@@ -120,45 +129,60 @@ function FootballScoreForm({ matchId, label, onClose }: { matchId: string; label
   });
 
   function addCard() {
-    if (!cardPlayer.trim()) return;
-    const card: CardEntry = { playerName: cardPlayer.trim(), type: cardType, minute: cardMinute ? parseInt(cardMinute) : undefined };
-    if (cardSide === "home") setHomeCards([...homeCards, card]);
-    else setAwayCards([...awayCards, card]);
-    setCardPlayer("");
+    if (!cardPlayerId || !cardTeamId) return;
+    const player = selectedTeamForCard?.players.find((p) => p.id === cardPlayerId);
+    if (!player) return;
+    setCards([...cards, {
+      playerName: player.name,
+      playerId: player.id,
+      teamId: cardTeamId,
+      type: cardType,
+      minute: cardMinute ? parseInt(cardMinute) : undefined,
+    }]);
+    setCardPlayerId("");
     setCardMinute("");
     setShowCardForm(false);
   }
 
-  return (
-    <div className="bg-white border border-border rounded-xl p-3 mt-1 space-y-3">
-      <p className="text-sm font-medium">{label}</p>
+  function removeCard(idx: number) {
+    setCards(cards.filter((_, i) => i !== idx));
+  }
 
-      {/* Goals */}
+  return (
+    <div className="bg-white border border-border rounded-2xl p-4 mt-2 space-y-3">
+      <p className="text-sm font-semibold">{label}</p>
+
+      {/* Full Time */}
       <div>
-        <p className="text-xs text-muted-foreground mb-1">Full Time Score</p>
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-xs font-medium">{homeTeam?.name || "Home"}</span>
+          <span className="text-xs text-muted-foreground">Full Time</span>
+          <span className="text-xs font-medium">{awayTeam?.name || "Away"}</span>
+        </div>
         <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center">
           <Input type="number" min={0} placeholder="0" value={homeGoals}
-            onChange={(e) => setHomeGoals(e.target.value)} className="text-center h-10 font-bold text-lg" required />
-          <span className="text-muted-foreground font-bold">-</span>
+            onChange={(e) => setHomeGoals(e.target.value)} className="text-center h-11 font-bold text-lg" required />
+          <span className="text-muted-foreground font-bold text-lg">-</span>
           <Input type="number" min={0} placeholder="0" value={awayGoals}
-            onChange={(e) => setAwayGoals(e.target.value)} className="text-center h-10 font-bold text-lg" required />
+            onChange={(e) => setAwayGoals(e.target.value)} className="text-center h-11 font-bold text-lg" required />
         </div>
       </div>
 
-      {/* Extra Time Toggle */}
-      <button
-        type="button"
-        onClick={() => setExtraTime(!extraTime)}
-        className={`inline-action w-full text-left py-2 px-3 rounded-xl text-xs font-medium transition-all ${
+      {/* Extra Time */}
+      <button type="button" onClick={() => setExtraTime(!extraTime)}
+        className={`inline-action w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${
           extraTime ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-muted/50 text-muted-foreground hover:bg-muted"
-        }`}
-      >
+        }`}>
         {extraTime ? "Extra Time ✓" : "+ Extra Time"}
       </button>
 
       {extraTime && (
         <div>
-          <p className="text-xs text-muted-foreground mb-1">Extra Time Goals</p>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs font-medium">{homeTeam?.name || "Home"}</span>
+            <span className="text-xs text-muted-foreground">Extra Time</span>
+            <span className="text-xs font-medium">{awayTeam?.name || "Away"}</span>
+          </div>
           <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center">
             <Input type="number" min={0} placeholder="0" value={homeET}
               onChange={(e) => setHomeET(e.target.value)} className="text-center h-9" />
@@ -169,68 +193,81 @@ function FootballScoreForm({ matchId, label, onClose }: { matchId: string; label
         </div>
       )}
 
-      {/* Cards */}
-      {(homeCards.length > 0 || awayCards.length > 0) && (
+      {/* Cards List */}
+      {cards.length > 0 && (
         <div className="space-y-1">
-          {[...homeCards.map((c, i) => ({ ...c, side: "Home", idx: i })), ...awayCards.map((c, i) => ({ ...c, side: "Away", idx: i }))].map((c, i) => (
-            <div key={i} className="flex items-center justify-between py-1 px-2 bg-muted/50 rounded-lg text-xs">
-              <span>
-                <span className={c.type === "red" ? "text-red-500 font-bold" : "text-yellow-500 font-bold"}>
-                  {c.type === "red" ? "🔴" : "🟡"}
+          <p className="text-xs font-medium text-muted-foreground">Cards</p>
+          {cards.map((c, i) => {
+            const team = teams.find((t) => t.id === c.teamId);
+            return (
+              <div key={i} className="flex items-center justify-between py-1.5 px-2.5 bg-muted/50 rounded-lg">
+                <span className="text-xs">
+                  {c.type === "red" ? "🔴" : "🟡"}{" "}
+                  {c.playerName}
+                  <span className="text-muted-foreground"> ({team?.name})</span>
+                  {c.minute ? <span className="text-muted-foreground"> {c.minute}&apos;</span> : ""}
                 </span>
-                {" "}{c.playerName} ({c.side}){c.minute ? ` ${c.minute}'` : ""}
-              </span>
-            </div>
-          ))}
+                <button onClick={() => removeCard(i)} className="text-red-400 text-xs hover:text-red-600 inline-action">✕</button>
+              </div>
+            );
+          })}
         </div>
       )}
 
+      {/* Add Card Form */}
       {showCardForm ? (
-        <div className="space-y-2 p-2 bg-muted/30 rounded-xl">
+        <div className="space-y-2 p-3 bg-muted/30 rounded-xl border border-border-light">
+          <p className="text-xs font-medium">Add Card</p>
+          <select className="w-full h-9 px-3 rounded-xl border border-border bg-white text-sm"
+            value={cardTeamId} onChange={(e) => { setCardTeamId(e.target.value); setCardPlayerId(""); }}>
+            <option value="">Select team...</option>
+            {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+          {cardTeamId && (
+            <select className="w-full h-9 px-3 rounded-xl border border-border bg-white text-sm"
+              value={cardPlayerId} onChange={(e) => setCardPlayerId(e.target.value)}>
+              <option value="">Select player...</option>
+              {selectedTeamForCard?.players.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          )}
           <div className="grid grid-cols-2 gap-2">
-            <select className="h-8 px-2 text-xs rounded-lg border border-border bg-white" value={cardSide} onChange={(e) => setCardSide(e.target.value as "home" | "away")}>
-              <option value="home">Home</option>
-              <option value="away">Away</option>
+            <select className="h-9 px-3 rounded-xl border border-border bg-white text-sm"
+              value={cardType} onChange={(e) => setCardType(e.target.value as "yellow" | "red")}>
+              <option value="yellow">🟡 Yellow</option>
+              <option value="red">🔴 Red</option>
             </select>
-            <select className="h-8 px-2 text-xs rounded-lg border border-border bg-white" value={cardType} onChange={(e) => setCardType(e.target.value as "yellow" | "red")}>
-              <option value="yellow">Yellow Card</option>
-              <option value="red">Red Card</option>
-            </select>
-          </div>
-          <div className="grid grid-cols-[1fr_60px] gap-2">
-            <Input placeholder="Player name" value={cardPlayer} onChange={(e) => setCardPlayer(e.target.value)} className="h-8 text-xs" />
-            <Input type="number" placeholder="Min" value={cardMinute} onChange={(e) => setCardMinute(e.target.value)} className="h-8 text-xs text-center" />
+            <Input type="number" placeholder="Minute" value={cardMinute}
+              onChange={(e) => setCardMinute(e.target.value)} className="h-9 text-sm text-center" />
           </div>
           <div className="flex gap-1.5">
-            <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs" onClick={() => setShowCardForm(false)}>Cancel</Button>
-            <Button size="sm" className="flex-1 h-7 text-xs" onClick={addCard}>Add Card</Button>
+            <Button variant="ghost" size="sm" className="flex-1 text-xs" onClick={() => setShowCardForm(false)}>Cancel</Button>
+            <Button size="sm" className="flex-1 text-xs" onClick={addCard} disabled={!cardPlayerId}>Add</Button>
           </div>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => setShowCardForm(true)}
-          className="inline-action w-full text-left py-2 px-3 rounded-xl text-xs font-medium bg-muted/50 text-muted-foreground hover:bg-muted"
-        >
-          + Add Card (Yellow/Red)
+        <button type="button" onClick={() => setShowCardForm(true)}
+          className="inline-action w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium bg-muted/50 text-muted-foreground hover:bg-muted">
+          + Add Card
         </button>
       )}
 
       {error && <p className="text-xs text-red-500">{error}</p>}
-      <div className="flex gap-1.5">
-        <Button type="button" variant="ghost" size="sm" className="flex-1 h-8 text-xs" onClick={onClose}>Cancel</Button>
-        <Button size="sm" className="flex-1 h-8 text-xs" loading={loading} onClick={() => {
+      <div className="flex gap-2">
+        <Button type="button" variant="ghost" size="sm" className="flex-1" onClick={onClose}>Cancel</Button>
+        <Button size="sm" className="flex-1" loading={loading} onClick={() => {
           setLoading(true); setError("");
+          const homeCardsList = cards.filter((c) => c.teamId === homeTeam?.id).map((c) => ({ playerName: c.playerName, type: c.type, minute: c.minute }));
+          const awayCardsList = cards.filter((c) => c.teamId === awayTeam?.id).map((c) => ({ playerName: c.playerName, type: c.type, minute: c.minute }));
           submitScore.mutate({ matchId, scoreData: {
             home: parseInt(homeGoals) || 0,
             away: parseInt(awayGoals) || 0,
             extraTime,
             homeET: extraTime ? (parseInt(homeET) || 0) : undefined,
             awayET: extraTime ? (parseInt(awayET) || 0) : undefined,
-            homeCards: homeCards.length > 0 ? homeCards : undefined,
-            awayCards: awayCards.length > 0 ? awayCards : undefined,
+            homeCards: homeCardsList.length > 0 ? homeCardsList : undefined,
+            awayCards: awayCardsList.length > 0 ? awayCardsList : undefined,
           } });
-        }}>Save</Button>
+        }}>Save Score</Button>
       </div>
     </div>
   );

@@ -37,7 +37,13 @@ export default async function MatchesPage({
                 },
                 orderBy: { matchNumber: "asc" },
               },
-              lineups: { select: { teamId: true, submitted: true } },
+              lineups: {
+                include: {
+                  entries: {
+                    include: { player: { select: { id: true, name: true } } },
+                  },
+                },
+              },
             },
             orderBy: [{ round: "asc" }, { tieNumber: "asc" }],
           },
@@ -161,6 +167,10 @@ export default async function MatchesPage({
                                         matchId={match.id}
                                         sportSlug={league.sport.slug}
                                         matchLabel={league.sport.slug === "football" ? "Match Score" : `${match.format === "SINGLES" ? "Singles" : "Doubles"} ${match.matchNumber}`}
+                                        teams={league.sport.slug === "football" ? [
+                                          { id: tie.homeTeam.id, name: tie.homeTeam.name, players: tie.lineups.find(l => l.teamId === tie.homeTeam.id)?.entries.map(e => ({ id: e.player.id, name: e.player.name })) || [] },
+                                          { id: tie.awayTeam.id, name: tie.awayTeam.name, players: tie.lineups.find(l => l.teamId === tie.awayTeam.id)?.entries.map(e => ({ id: e.player.id, name: e.player.name })) || [] },
+                                        ] : undefined}
                                       />
                                     ) : (
                                       <span className="text-muted-foreground">
