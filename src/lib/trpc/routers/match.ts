@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure, requireRole } from "../server";
 import { getScorer, calculateTiePoints } from "@/lib/scoring";
 import { verifyTieOwnership } from "./_helpers";
+import { logAudit } from "@/lib/audit";
 
 export const matchRouter = router({
   // Get all ties for a division
@@ -189,6 +190,18 @@ export const matchRouter = router({
         data: { status: "COMPLETED", winnerId },
       });
 
+      // Audit log
+      await logAudit({
+        action: existingScore ? "SCORE_EDITED" : "SCORE_ENTERED",
+        userId: ctx.session.user.id,
+        userName: ctx.session.user.name || "Unknown",
+        entityType: "match",
+        entityId: input.matchId,
+        before: existingScore?.scoreData ?? null,
+        after: input.scoreData,
+        metadata: { tieId: match.tieId, winnerId, sport: sportSlug },
+      });
+
       // Check if all matches in this tie are complete, then finalize tie
       await finalizeTieIfComplete(ctx.db, match.tieId);
 
@@ -257,6 +270,15 @@ export const matchRouter = router({
       // Update standings
       await updateStandingsForTie(ctx.db, tie.divisionId, winningTeamId, input.forfeitingTeamId, totalMatches, 0, true);
 
+      await logAudit({
+        action: "WALKOVER",
+        userId: ctx.session.user.id,
+        userName: ctx.session.user.name || "Unknown",
+        entityType: "tie",
+        entityId: input.tieId,
+        after: { forfeitingTeamId: input.forfeitingTeamId, winningTeamId },
+      });
+
       return { winnerId: winningTeamId };
     }),
 
@@ -269,6 +291,112 @@ export const matchRouter = router({
         include: { team: { select: { id: true, name: true } } },
         orderBy: [{ totalPoints: "desc" }, { matchesWon: "desc" }],
       });
+    }),
+
+  // T-008: Rebuild all standings for a division from scratch
+  rebuildStandings: protectedProcedure
+    .use(requireRole("SUPER_ADMIN"))
+    .input(z.object({ divisionId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // Zero out all standings
+      await ctx.db.standing.updateMany({
+        where: { divisionId: input.divisionId },
+        data: { tiesPlayed: 0, tiesWon: 0, tiesLost: 0, matchesWon: 0, matchesLost: 0, bonusPoints: 0, totalPoints: 0, rank: 0 },
+      });
+
+      // Get all completed ties
+      const ties = await ctx.db.tie.findMany({
+        where: { divisionId: input.divisionId, status: { in: ["COMPLETED", "WALKOVER"] } },
+        include: { matches: { include: { scores: { take: 1 } } } },
+      });
+
+      // Recalculate from each tie
+      for (const tie of ties) {
+        if (tie.isWalkover) {
+          const winnerId = tie.winnerId!;
+          const loserId = tie.homeTeamId === winnerId ? tie.awayTeamId : tie.homeTeamId;
+          await updateStandingsForTie(ctx.db, input.divisionId, winnerId, loserId, tie.matches.length, 0, true);
+        } else {
+          let homeWins = 0;
+          let awayWins = 0;
+          for (const match of tie.matches) {
+            if (match.winnerId === tie.homeTeamId) homeWins++;
+            else if (match.winnerId === tie.awayTeamId) awayWins++;
+          }
+          await updateStandingsForTie(ctx.db, input.divisionId, tie.homeTeamId, tie.awayTeamId, homeWins, awayWins, false);
+        }
+      }
+
+      // Recalculate ranks
+      const standings = await ctx.db.standing.findMany({
+        where: { divisionId: input.divisionId },
+        orderBy: [{ totalPoints: "desc" }, { matchesWon: "desc" }],
+      });
+      await Promise.all(standings.map((s, idx) => ctx.db.standing.update({ where: { id: s.id }, data: { rank: idx + 1 } })));
+
+      await logAudit({
+        action: "STANDINGS_REBUILD",
+        userId: ctx.session.user.id,
+        userName: ctx.session.user.name || "Unknown",
+        entityType: "division",
+        entityId: input.divisionId,
+        metadata: { tiesProcessed: ties.length },
+      });
+
+      return { rebuiltFrom: ties.length };
+    }),
+
+  // T-014: Admin override for locked scores
+  adminOverrideScore: protectedProcedure
+    .use(requireRole("SUPER_ADMIN"))
+    .input(z.object({ matchId: z.string(), scoreData: z.any() }))
+    .mutation(async ({ ctx, input }) => {
+      const match = await ctx.db.match.findUniqueOrThrow({
+        where: { id: input.matchId },
+        include: {
+          scores: { take: 1 },
+          tie: { include: { division: { include: { league: { include: { sport: true } } } } } },
+        },
+      });
+
+      const sportSlug = match.tie.division.league.sport.slug;
+      const scorer = getScorer(sportSlug);
+      const validation = scorer.validateScore(input.scoreData);
+      if (!validation.valid) throw new TRPCError({ code: "BAD_REQUEST", message: validation.error || "Invalid score" });
+
+      const winner = scorer.determineWinner(input.scoreData);
+      const winnerId = winner === "home" ? match.tie.homeTeamId : winner === "away" ? match.tie.awayTeamId : null;
+
+      const oldScore = match.scores[0];
+
+      if (oldScore) {
+        // Admin override — bypass edit count
+        await ctx.db.matchScore.update({
+          where: { id: oldScore.id },
+          data: { scoreData: input.scoreData, enteredById: ctx.session.user.id },
+        });
+      } else {
+        await ctx.db.matchScore.create({
+          data: { matchId: input.matchId, scoreData: input.scoreData, enteredById: ctx.session.user.id },
+        });
+      }
+
+      await ctx.db.match.update({
+        where: { id: input.matchId },
+        data: { status: "COMPLETED", winnerId },
+      });
+
+      await logAudit({
+        action: "ADMIN_SCORE_OVERRIDE",
+        userId: ctx.session.user.id,
+        userName: ctx.session.user.name || "Unknown",
+        entityType: "match",
+        entityId: input.matchId,
+        before: oldScore?.scoreData,
+        after: input.scoreData,
+      });
+
+      return { winnerId, winner };
     }),
 });
 

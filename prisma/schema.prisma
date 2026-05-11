@@ -485,3 +485,24 @@ model Standing {
   @@index([divisionId, rank])
   @@index([divisionId, totalPoints])
 }
+
+// ============================================
+// AUDIT LOG
+// ============================================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String   // SCORE_ENTERED, SCORE_EDITED, WALKOVER, STATUS_CHANGE, etc.
+  userId    String
+  userName  String
+  entityType String  // match, tie, league, team
+  entityId  String
+  before    Json?    // previous state
+  after     Json?    // new state
+  metadata  Json?    // extra context
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+}

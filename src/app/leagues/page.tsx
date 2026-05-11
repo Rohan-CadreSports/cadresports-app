@@ -20,9 +20,9 @@ function formatShortDate(date: Date | null): string {
 export default async function LeaguesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ city?: string }>;
+  searchParams: Promise<{ city?: string; q?: string; sport?: string }>;
 }) {
-  const { city: queryCity } = await searchParams;
+  const { city: queryCity, q: searchQuery, sport: sportFilter } = await searchParams;
   const session = await auth();
 
   let userCity: string | null = null;
@@ -48,11 +48,19 @@ export default async function LeaguesPage({
   if (filterCity) {
     where.city = { equals: filterCity, mode: "insensitive" };
   }
+  if (searchQuery) {
+    where.name = { contains: searchQuery, mode: "insensitive" };
+  }
+  if (sportFilter) {
+    where.sport = { slug: sportFilter };
+  }
+
+  const sports = await db.sport.findMany({ where: { isActive: true }, select: { slug: true, name: true } });
 
   const leagues = await db.league.findMany({
     where,
     include: {
-      sport: { select: { name: true } },
+      sport: { select: { name: true, slug: true } },
       _count: { select: { registrations: true } },
     },
     orderBy: { createdAt: "desc" },
@@ -70,13 +78,43 @@ export default async function LeaguesPage({
       <div>
         <h1 className="text-2xl font-bold">Leagues</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          {filterCity
-            ? `Showing leagues in ${filterCity}`
-            : userCity
-            ? `Showing leagues in ${userCity} first`
-            : "Find and join leagues near you"}
+          {searchQuery ? `Results for "${searchQuery}"` :
+           filterCity ? `Showing leagues in ${filterCity}` :
+           userCity ? `Showing leagues in ${userCity} first` :
+           "Find and join leagues near you"}
         </p>
       </div>
+
+      {/* Search + Sport Filter */}
+      <form action="/leagues" className="space-y-2">
+        {filterCity && <input type="hidden" name="city" value={filterCity} />}
+        <div className="flex gap-2">
+          <input
+            name="q"
+            type="text"
+            defaultValue={searchQuery || ""}
+            placeholder="Search leagues..."
+            className="flex-1 h-11 px-4 rounded-2xl bg-surface border border-border text-foreground text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand"
+          />
+          <button type="submit" className="h-11 px-5 bg-brand text-white rounded-2xl font-medium text-sm hover:opacity-90 inline-action">
+            Search
+          </button>
+        </div>
+        <div className="flex gap-1.5 flex-wrap">
+          <Link href={`/leagues${filterCity ? `?city=${filterCity}` : ""}`}>
+            <span className={`inline-action text-xs px-3 py-1.5 rounded-full border font-medium transition-all ${!sportFilter ? "bg-brand text-white border-brand" : "bg-surface border-border-light hover:border-brand"}`}>
+              All Sports
+            </span>
+          </Link>
+          {sports.map((s) => (
+            <Link key={s.slug} href={`/leagues?sport=${s.slug}${filterCity ? `&city=${filterCity}` : ""}`}>
+              <span className={`inline-action text-xs px-3 py-1.5 rounded-full border font-medium transition-all ${sportFilter === s.slug ? "bg-brand text-white border-brand" : "bg-surface border-border-light hover:border-brand"}`}>
+                {s.name}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </form>
 
       {sortedLeagues.length === 0 ? (
         <Card>
