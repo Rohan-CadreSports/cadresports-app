@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-05-11
 **Total tickets:** 32
-**Fixed:** 3 | **In Progress:** 1 | **Open:** 28
+**Fixed:** 9 | **In Progress:** 0 | **Open:** 23
 
 ---
 
@@ -61,7 +61,7 @@
 - **Files:** New test files throughout
 
 ### T-007: Audit logging for score changes
-- **Status:** OPEN
+- **Status:** FIXED (2026-05-11)
 - **Priority:** HIGH
 - **Description:** When TO enters/edits a score, there's no record of who changed what and when. Critical for disputes.
 - **Fix:** Create AuditLog table. Log every score entry, edit, walkover with userId, timestamp, before/after data.
@@ -69,7 +69,7 @@
 - **Files:** New Prisma model, `src/lib/trpc/routers/match.ts`
 
 ### T-008: Standings full rebuild endpoint
-- **Status:** OPEN
+- **Status:** FIXED (2026-05-11)
 - **Priority:** HIGH
 - **Description:** If standings data gets corrupted (race condition, manual DB edit), no way to recalculate from scratch. Only incremental updates exist.
 - **Fix:** Add admin endpoint that recalculates all standings for a division from match scores. Zero out and rebuild.
@@ -85,7 +85,7 @@
 - **Files:** `src/app/error.tsx`, per-route error files
 
 ### T-010: Search leagues by name
-- **Status:** OPEN
+- **Status:** FIXED (2026-05-11)
 - **Priority:** HIGH
 - **Description:** Users can only browse leagues by city. No way to search "Mumbai Badminton" or find a specific league.
 - **Fix:** Add search input on /leagues page. tRPC query with name contains filter.
@@ -93,7 +93,7 @@
 - **Files:** `src/app/leagues/page.tsx`, `src/lib/trpc/routers/league.ts`
 
 ### T-011: Filter leagues by sport
-- **Status:** OPEN
+- **Status:** FIXED (2026-05-11)
 - **Priority:** HIGH
 - **Description:** Can't filter league list to show only badminton or only football leagues.
 - **Fix:** Add sport filter pills/tabs on /leagues page.
@@ -117,7 +117,7 @@
 - **Files:** New notification service, hooks in registration/match routers
 
 ### T-014: Admin override for locked scores
-- **Status:** OPEN
+- **Status:** FIXED (2026-05-11)
 - **Priority:** HIGH
 - **Description:** After 1 edit, scores are locked forever. Only changeable via direct DB access. Super Admin needs UI to override.
 - **Fix:** Add Super Admin score override endpoint that bypasses edit count check. Add UI button visible only to admin.
@@ -285,6 +285,11 @@
 | T-002 | Password reset flow | 2026-05-11 | Forgot password page, reset page, email with token, 1hr expiry |
 | T-003 | Email verification | 2026-05-11 | Verification email, verify-email page, token-based. Needs Resend API key |
 | T-009 | Global error boundary | 2026-05-11 | error.tsx + not-found.tsx with friendly messages and retry |
+| T-007 | Audit logging | 2026-05-11 | AuditLog table, logs score entry/edit/walkover/rebuild with before/after |
+| T-008 | Standings rebuild | 2026-05-11 | Super Admin endpoint recalculates all standings from match data |
+| T-010 | Search leagues | 2026-05-11 | Search bar on /leagues page, name contains filter |
+| T-011 | Sport filter | 2026-05-11 | Sport pills on /leagues page (All/Badminton/Football) |
+| T-014 | Admin score override | 2026-05-11 | Super Admin can override locked scores, bypasses edit count |
 
 ---
 
