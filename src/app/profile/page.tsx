@@ -125,7 +125,7 @@ export default function ProfilePage() {
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Bio</label>
               <textarea
-                className="w-full px-4 py-3 border border-border bg-white text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all min-h-[80px] text-base"
+                className="w-full px-3.5 py-2.5 rounded-[8px] border border-border bg-muted/50 text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand focus:bg-surface transition-all min-h-[72px] text-[14px]"
                 placeholder="Tell us about yourself..."
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}

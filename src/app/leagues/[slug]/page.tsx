@@ -112,7 +112,7 @@ export default async function LeagueDetailPage({
 
         if (deadlinePassed) {
           return (
-            <div className="p-4 bg-red-50 border border-red-100 rounded-2xl text-center">
+            <div className="p-4 bg-red-50 border border-red-100 rounded-[10px] text-center">
               <p className="text-sm font-semibold text-red-700">Registration deadline has passed</p>
               <p className="text-xs text-red-600 mt-0.5">
                 Deadline was {formatShortDate(league.registrationEnd)}
@@ -136,15 +136,15 @@ export default async function LeagueDetailPage({
 
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-surface border border-border-light rounded-2xl p-3 text-center shadow-[var(--shadow-xs)]">
+        <div className="bg-surface border border-border-light rounded-[10px] p-3 text-center shadow-[var(--shadow-xs)]">
           <p className="text-2xl font-bold text-foreground">{league._count.registrations}</p>
           <p className="text-xs text-muted-foreground">Players</p>
         </div>
-        <div className="bg-surface border border-border-light rounded-2xl p-3 text-center shadow-[var(--shadow-xs)]">
+        <div className="bg-surface border border-border-light rounded-[10px] p-3 text-center shadow-[var(--shadow-xs)]">
           <p className="text-2xl font-bold text-foreground">{league.divisions.length}</p>
           <p className="text-xs text-muted-foreground">Divisions</p>
         </div>
-        <div className="bg-surface border border-border-light rounded-2xl p-3 text-center shadow-[var(--shadow-xs)]">
+        <div className="bg-surface border border-border-light rounded-[10px] p-3 text-center shadow-[var(--shadow-xs)]">
           <p className="text-2xl font-bold text-foreground">{totalTeams}</p>
           <p className="text-xs text-muted-foreground">Teams</p>
         </div>
@@ -159,8 +159,8 @@ export default async function LeagueDetailPage({
           ...(session ? [{ href: `/leagues/${slug}/my-results`, icon: Users, label: "My Results" }] : []),
         ].map((nav) => (
           <Link key={nav.href} href={nav.href}>
-            <div className="bg-surface border border-border-light rounded-2xl p-3 flex items-center gap-3 press-effect shadow-[var(--shadow-xs)]">
-              <div className="w-9 h-9 bg-neutral-100 rounded-xl flex items-center justify-center shrink-0">
+            <div className="bg-surface border border-border-light rounded-[10px] p-3 flex items-center gap-3 press-effect shadow-[var(--shadow-xs)]">
+              <div className="w-9 h-9 bg-neutral-100 rounded-[8px] flex items-center justify-center shrink-0">
                 <nav.icon className="w-4 h-4 text-brand" />
               </div>
               <span className="text-sm font-medium flex-1">{nav.label}</span>
@@ -176,7 +176,7 @@ export default async function LeagueDetailPage({
           <h2 className="text-base font-semibold mb-2">{div.name}</h2>
           <div className="space-y-1.5">
             {div.teams.map((team) => (
-              <div key={team.id} className="flex items-center justify-between py-2.5 px-3 bg-surface border border-border-light rounded-xl shadow-[var(--shadow-xs)]">
+              <div key={team.id} className="flex items-center justify-between py-2.5 px-3 bg-surface border border-border-light rounded-[8px] shadow-[var(--shadow-xs)]">
                 <div className="min-w-0">
                   <p className="text-sm font-medium truncate">{team.name}</p>
                   <p className="text-xs text-muted-foreground"><PlayerLink id={team.captain.id} name={team.captain.name} /></p>

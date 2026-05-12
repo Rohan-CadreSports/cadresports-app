@@ -34,7 +34,7 @@ export default async function SportsPage() {
           {sports.map((sport) => (
             <Link key={sport.id} href={`/leagues?sport=${sport.slug}`}>
               <Card className="hover:border-brand transition-colors cursor-pointer text-center py-8">
-                <div className="w-12 h-12 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 bg-brand/10 rounded-[10px] flex items-center justify-center mx-auto mb-3">
                   <Trophy className="w-6 h-6 text-brand" />
                 </div>
                 <h3 className="font-semibold">{sport.name}</h3>

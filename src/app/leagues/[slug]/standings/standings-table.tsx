@@ -35,7 +35,7 @@ function Th({ tip, children, className }: { tip: string; children: React.ReactNo
 
 export function StandingsTable({ standings }: { standings: StandingItem[] }) {
   return (
-    <div className="overflow-x-auto mobile-scroll rounded-2xl bg-surface border border-border-light shadow-[var(--shadow-sm)]">
+    <div className="overflow-x-auto mobile-scroll rounded-[10px] bg-surface border border-border-light shadow-[var(--shadow-sm)]">
       <table className="w-full text-sm min-w-[500px]">
         <thead>
           <tr className="text-xs font-semibold text-muted-foreground border-b-2 border-brand/10 bg-brand/[0.03]">
@@ -66,7 +66,7 @@ export function StandingsTable({ standings }: { standings: StandingItem[] }) {
               <td className="py-4 px-2 text-center text-red-500 text-sm">{s.tiesLost}</td>
               <td className="py-4 px-2 text-center font-medium text-sm">{s.matchesWon}</td>
               <td className="py-4 px-3 text-center">
-                <span className="inline-flex items-center justify-center min-w-[36px] h-8 rounded-xl bg-neutral-100 text-brand font-bold text-base">{s.totalPoints}</span>
+                <span className="inline-flex items-center justify-center min-w-[36px] h-8 rounded-[8px] bg-neutral-100 text-brand font-bold text-base">{s.totalPoints}</span>
               </td>
             </tr>
           ))}

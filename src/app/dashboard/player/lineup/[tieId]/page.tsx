@@ -36,9 +36,9 @@ export default function LineupPage() {
     return (
       <div className="max-w-sm mx-auto px-4 py-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded-xl w-48" />
-          <div className="h-32 bg-muted rounded-2xl" />
-          <div className="h-32 bg-muted rounded-2xl" />
+          <div className="h-8 bg-muted rounded-[8px] w-48" />
+          <div className="h-32 bg-muted rounded-[10px]" />
+          <div className="h-32 bg-muted rounded-[10px]" />
         </div>
       </div>
     );
@@ -94,7 +94,7 @@ export default function LineupPage() {
   return (
     <div className="max-w-sm mx-auto px-4 py-6 space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-xl">
+        <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-[8px]">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
@@ -113,13 +113,13 @@ export default function LineupPage() {
       </Card>
 
       {success && (
-        <div className="bg-green-50 text-green-700 text-sm p-3 rounded-xl flex items-center gap-2">
+        <div className="bg-green-50 text-green-700 text-sm p-3 rounded-[8px] flex items-center gap-2">
           <Check className="w-4 h-4" /> Lineup submitted! Redirecting...
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>
+        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[8px]">{error}</div>
       )}
 
       <div className="space-y-3">

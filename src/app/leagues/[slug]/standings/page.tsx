@@ -69,7 +69,7 @@ export default async function StandingsPage({
   return (
     <div className="px-4 py-5 pb-20 max-w-2xl mx-auto space-y-5">
       <div className="flex items-center gap-3">
-        <Link href={`/leagues/${slug}`} className="p-2 hover:bg-muted rounded-xl">
+        <Link href={`/leagues/${slug}`} className="p-2 hover:bg-muted rounded-[8px]">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>

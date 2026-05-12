@@ -38,7 +38,7 @@ export default function ResetPasswordPage() {
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="w-full max-w-[400px] text-center">
           <div className="bg-surface rounded-3xl shadow-[var(--shadow-lg)] border border-border-light p-8">
-            <img src="/logo.png" alt="CadreSports" className="w-14 h-14 rounded-2xl mx-auto mb-4" />
+            <img src="/logo.png" alt="CadreSports" className="w-14 h-14 rounded-[10px] mx-auto mb-4" />
             <h1 className="text-xl font-bold mb-2">Password updated</h1>
             <p className="text-sm text-muted-foreground mb-4">You can now sign in with your new password.</p>
             <Link href="/auth/signin"><Button className="w-full">Sign In</Button></Link>
@@ -53,11 +53,11 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-[400px]">
         <div className="bg-surface rounded-3xl shadow-[var(--shadow-lg)] border border-border-light p-8 space-y-5">
           <div className="text-center">
-            <img src="/logo.png" alt="CadreSports" className="w-14 h-14 rounded-2xl mx-auto mb-4" />
+            <img src="/logo.png" alt="CadreSports" className="w-14 h-14 rounded-[10px] mx-auto mb-4" />
             <h1 className="text-xl font-bold">Set new password</h1>
           </div>
 
-          {error && <p className="text-sm text-red-500 bg-red-50 p-3 rounded-2xl">{error}</p>}
+          {error && <p className="text-sm text-red-500 bg-red-50 p-3 rounded-[10px]">{error}</p>}
 
           <form onSubmit={(e) => {
             e.preventDefault();

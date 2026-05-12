@@ -45,7 +45,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-[400px]">
         <div className="bg-surface rounded-3xl shadow-[var(--shadow-lg)] border border-border-light p-8 space-y-6">
           <div className="text-center">
-            <img src="/logo.png" alt="CadreSports" className="w-16 h-16 rounded-2xl mx-auto mb-5 shadow-[var(--shadow-md)]" />
+            <img src="/logo.png" alt="CadreSports" className="w-16 h-16 rounded-[10px] mx-auto mb-5 shadow-[var(--shadow-md)]" />
             <h1 className="text-2xl font-bold tracking-tight">Create your account</h1>
             <p className="text-muted-foreground text-sm mt-1">Join the CadreSports community</p>
           </div>
@@ -70,7 +70,7 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-2xl border border-red-100">{error}</div>
+            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px] border border-red-100">{error}</div>
           )}
 
         <form onSubmit={handleSubmit} className="space-y-4">

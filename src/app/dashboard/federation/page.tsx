@@ -40,7 +40,7 @@ export default async function FederationDashboard() {
         <div key={fa.id} className="space-y-4">
           <Card className="bg-brand/5 border-brand/20">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-brand/10 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-brand/10 rounded-[8px] flex items-center justify-center">
                 <Shield className="w-5 h-5 text-brand" />
               </div>
               <div>

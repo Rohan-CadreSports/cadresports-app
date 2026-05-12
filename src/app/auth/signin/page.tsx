@@ -47,7 +47,7 @@ export default function SignInPage() {
         <div className="bg-surface rounded-3xl shadow-[var(--shadow-lg)] border border-border-light p-6 sm:p-8 space-y-5">
           {/* Header */}
           <div className="text-center">
-            <img src="/logo.png" alt="CadreSports" className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl mx-auto mb-4 shadow-[var(--shadow-md)]" />
+            <img src="/logo.png" alt="CadreSports" className="w-14 h-14 sm:w-16 sm:h-16 rounded-[10px] mx-auto mb-4 shadow-[var(--shadow-md)]" />
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Welcome back</h1>
             <p className="text-muted-foreground text-sm mt-1">Sign in to CadreSports</p>
           </div>
@@ -73,9 +73,9 @@ export default function SignInPage() {
           </div>
 
           {/* Tab switcher */}
-          <div className="flex bg-muted rounded-2xl p-1">
+          <div className="flex bg-muted rounded-[10px] p-1">
             <button
-              className={`flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
+              className={`flex-1 py-2.5 text-sm font-semibold rounded-[8px] transition-all duration-200 ${
                 tab === "email" ? "bg-surface text-foreground shadow-[var(--shadow-sm)]" : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => setTab("email")}
@@ -83,7 +83,7 @@ export default function SignInPage() {
               Email
             </button>
             <button
-              className={`flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
+              className={`flex-1 py-2.5 text-sm font-semibold rounded-[8px] transition-all duration-200 ${
                 tab === "phone" ? "bg-surface text-foreground shadow-[var(--shadow-sm)]" : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => setTab("phone")}
@@ -93,7 +93,7 @@ export default function SignInPage() {
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-2xl border border-red-100">{error}</div>
+            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px] border border-red-100">{error}</div>
           )}
 
           {tab === "email" && (
@@ -116,7 +116,7 @@ export default function SignInPage() {
                 <Button type="button" className="w-full h-12" onClick={handleSendOtp}>Send OTP</Button>
               ) : (
                 <>
-                  <div className="bg-emerald-50 text-emerald-700 text-sm p-3 rounded-2xl border border-emerald-100">
+                  <div className="bg-emerald-50 text-emerald-700 text-sm p-3 rounded-[10px] border border-emerald-100">
                     OTP sent! (Demo: enter any 6 digits)
                   </div>
                   <Input id="otp" label="Enter OTP" type="text" inputMode="numeric" placeholder="123456" maxLength={6} value={otp} onChange={(e) => setOtp(e.target.value)} required />

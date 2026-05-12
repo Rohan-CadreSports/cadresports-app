@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="w-full max-w-[400px] text-center">
         <div className="bg-surface rounded-3xl shadow-[var(--shadow-lg)] border border-border-light p-8">
-          <img src="/logo.png" alt="CadreSports" className="w-14 h-14 rounded-2xl mx-auto mb-4" />
+          <img src="/logo.png" alt="CadreSports" className="w-14 h-14 rounded-[10px] mx-auto mb-4" />
 
           {status === "loading" && (
             <>

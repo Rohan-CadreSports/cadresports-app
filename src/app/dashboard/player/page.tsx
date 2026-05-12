@@ -97,7 +97,7 @@ export default async function PlayerDashboard() {
 
       {/* Pending registrations */}
       {registrations.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+        <div className="bg-amber-50 border border-amber-200 rounded-[10px] p-4">
           <p className="text-sm font-semibold text-amber-800 mb-2">Pending Registrations</p>
           {registrations.map((reg) => (
             <Link key={reg.id} href={`/leagues/${reg.league.slug}`} className="flex items-center justify-between py-1.5">
@@ -122,7 +122,7 @@ export default async function PlayerDashboard() {
         </div>
 
         {upcomingTies.length === 0 ? (
-          <div className="bg-surface border border-border-light rounded-2xl p-6 text-center shadow-[var(--shadow-xs)]">
+          <div className="bg-surface border border-border-light rounded-[10px] p-6 text-center shadow-[var(--shadow-xs)]">
             <p className="text-sm text-muted-foreground">No upcoming matches</p>
           </div>
         ) : (
@@ -134,7 +134,7 @@ export default async function PlayerDashboard() {
 
               return (
                 <Link key={tie.id} href={`/leagues/${tie.division.league.slug}/my-matches`}>
-                  <div className="relative rounded-2xl border border-border-light bg-surface p-4 pl-5 press-effect mb-2 shadow-[var(--shadow-xs)]">
+                  <div className="relative rounded-[10px] border border-border-light bg-surface p-4 pl-5 press-effect mb-2 shadow-[var(--shadow-xs)]">
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand rounded-l-2xl" />
                     <p className="text-xs text-muted-foreground">{tie.division.league.name} · Round {tie.round}</p>
                     <div className="flex items-center justify-between mt-1">
@@ -162,7 +162,7 @@ export default async function PlayerDashboard() {
         </h2>
 
         {leagueMap.size === 0 ? (
-          <div className="bg-surface border border-border-light rounded-2xl p-8 text-center shadow-[var(--shadow-xs)]">
+          <div className="bg-surface border border-border-light rounded-[10px] p-8 text-center shadow-[var(--shadow-xs)]">
             <p className="text-muted-foreground">No leagues joined yet</p>
             <Link href="/leagues" className="text-brand text-sm font-semibold mt-2 block">
               Browse leagues
@@ -175,7 +175,7 @@ export default async function PlayerDashboard() {
 
               return (
                 <Link key={slug} href={`/leagues/${slug}`}>
-                  <div className={`relative rounded-2xl border overflow-hidden press-effect mb-2 shadow-[var(--shadow-xs)] ${
+                  <div className={`relative rounded-[10px] border overflow-hidden press-effect mb-2 shadow-[var(--shadow-xs)] ${
                     isLive ? "border-border bg-surface" : "border-border-light bg-surface"
                   }`}>
                     <div className={`absolute left-0 top-0 bottom-0 w-1 ${isLive ? "bg-brand" : "bg-blue-500"}`} />
@@ -200,7 +200,7 @@ export default async function PlayerDashboard() {
                       )}
 
                       {league.teams.map((tm) => (
-                        <div key={tm.id} className="flex items-center justify-between mt-2 py-1.5 px-3 bg-muted/50 rounded-xl">
+                        <div key={tm.id} className="flex items-center justify-between mt-2 py-1.5 px-3 bg-muted/50 rounded-[8px]">
                           <span className="text-sm font-medium">{tm.team.name}</span>
                           <div className="flex items-center gap-2">
                             {tm.team.captain.id === userId && (

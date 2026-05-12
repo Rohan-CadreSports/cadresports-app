@@ -132,7 +132,7 @@ export default async function LeagueManagePage({
           <Card>
             <div className="space-y-2">
               {accepted.map((reg) => (
-                <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-green-50 rounded-xl">
+                <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-green-50 rounded-[8px]">
                   <div className="flex items-center gap-2">
                     <PlayerAvatar id={reg.player.id} name={reg.player.name} size="sm" className="!bg-green-600" />
                     <div>
@@ -156,7 +156,7 @@ export default async function LeagueManagePage({
           <Card>
             <div className="space-y-2">
               {declined.map((reg) => (
-                <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-red-50 rounded-xl">
+                <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-red-50 rounded-[8px]">
                   <div>
                     <p className="text-sm font-medium"><PlayerLink id={reg.player.id} name={reg.player.name} /></p>
                     <p className="text-xs text-muted-foreground">{reg.player.email}</p>
@@ -187,7 +187,7 @@ export default async function LeagueManagePage({
                 ) : (
                   <div className="space-y-2">
                     {div.teams.map((team) => (
-                      <div key={team.id} className="flex items-center justify-between py-2 px-3 bg-muted rounded-xl">
+                      <div key={team.id} className="flex items-center justify-between py-2 px-3 bg-muted rounded-[8px]">
                         <div>
                           <p className="text-sm font-medium">{team.name}</p>
                           <p className="text-xs text-muted-foreground">Captain: <PlayerLink id={team.captain.id} name={team.captain.name} /></p>
@@ -209,7 +209,7 @@ export default async function LeagueManagePage({
           <Card className="border-yellow-200">
             <div className="space-y-2">
               {pending.slice(0, 5).map((reg) => (
-                <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-yellow-50 rounded-xl">
+                <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-yellow-50 rounded-[8px]">
                   <div>
                     <p className="text-sm font-medium"><PlayerLink id={reg.player.id} name={reg.player.name} /></p>
                     <p className="text-xs text-muted-foreground">{reg.player.email}</p>

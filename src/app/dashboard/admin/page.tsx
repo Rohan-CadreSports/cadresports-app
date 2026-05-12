@@ -60,19 +60,19 @@ export default async function AdminDashboard() {
       {/* Quick Actions */}
       <div className="grid grid-cols-3 gap-2">
         <Link href="/dashboard/admin/create-league">
-          <div className="bg-brand text-white rounded-2xl p-4 text-center press-effect shadow-[var(--shadow-sm)]">
+          <div className="bg-brand text-white rounded-[10px] p-4 text-center press-effect shadow-[var(--shadow-sm)]">
             <Plus className="w-6 h-6 mx-auto mb-1" />
             <p className="text-xs font-semibold">New League</p>
           </div>
         </Link>
         <Link href="/dashboard/admin/create-operator">
-          <div className="bg-surface border border-border-light rounded-2xl p-4 text-center press-effect shadow-[var(--shadow-xs)]">
+          <div className="bg-surface border border-border-light rounded-[10px] p-4 text-center press-effect shadow-[var(--shadow-xs)]">
             <Users className="w-6 h-6 mx-auto mb-1 text-brand" />
             <p className="text-xs font-semibold">New TO</p>
           </div>
         </Link>
         <Link href="/dashboard/admin/create-federation">
-          <div className="bg-surface border border-border-light rounded-2xl p-4 text-center press-effect shadow-[var(--shadow-xs)]">
+          <div className="bg-surface border border-border-light rounded-[10px] p-4 text-center press-effect shadow-[var(--shadow-xs)]">
             <Trophy className="w-6 h-6 mx-auto mb-1 text-brand" />
             <p className="text-xs font-semibold">Federation</p>
           </div>
@@ -86,7 +86,7 @@ export default async function AdminDashboard() {
           { label: "Leagues", value: leagueCount, color: "text-brand" },
           { label: "Live", value: activeLeagues, color: "text-emerald-600" },
         ].map((stat) => (
-          <div key={stat.label} className="bg-surface border border-border-light rounded-2xl p-3 text-center shadow-[var(--shadow-xs)]">
+          <div key={stat.label} className="bg-surface border border-border-light rounded-[10px] p-3 text-center shadow-[var(--shadow-xs)]">
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
             <p className="text-xs text-muted-foreground">{stat.label}</p>
           </div>
@@ -112,7 +112,7 @@ export default async function AdminDashboard() {
 
               return (
                 <Link key={league.id} href={`/dashboard/operator/league/${league.id}`}>
-                  <div className={`relative rounded-2xl border overflow-hidden press-effect mb-2 ${
+                  <div className={`relative rounded-[10px] border overflow-hidden press-effect mb-2 ${
                     isLive
                       ? "border-border bg-surface"
                       : "border-border-light bg-surface"
@@ -153,7 +153,7 @@ export default async function AdminDashboard() {
         <h2 className="text-base font-semibold mb-3">Recent Users</h2>
         <div className="space-y-1.5">
           {recentUsers.map((user) => (
-            <div key={user.id} className="flex items-center justify-between py-2.5 px-3 bg-surface border border-border-light rounded-xl">
+            <div key={user.id} className="flex items-center justify-between py-2.5 px-3 bg-surface border border-border-light rounded-[8px]">
               <div className="flex items-center gap-2.5 min-w-0">
                 <PlayerAvatar id={user.id} name={user.name} size="sm" className="!bg-brand/10 !text-brand" />
                 <div className="min-w-0">

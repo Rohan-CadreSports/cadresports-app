@@ -179,14 +179,14 @@ export default function AdminCreateLeaguePage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/dashboard/admin" className="p-2 hover:bg-muted rounded-xl">
+        <Link href="/dashboard/admin" className="p-2 hover:bg-muted rounded-[8px]">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <h1 className="text-2xl font-bold">Create New League</h1>
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>
+        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[8px]">{error}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -209,7 +209,7 @@ export default function AdminCreateLeaguePage() {
               Description
             </label>
             <textarea
-              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all min-h-[80px] text-base"
+              className="w-full px-4 py-3 rounded-[8px] border border-border bg-white text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all min-h-[80px] text-base"
               placeholder="Describe your league..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -395,7 +395,7 @@ export default function AdminCreateLeaguePage() {
                 <button
                   type="button"
                   onClick={() => removeDivision(idx)}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-xl"
+                  className="p-2 text-red-500 hover:bg-red-50 rounded-[8px]"
                 >
                   <X className="w-4 h-4" />
                 </button>

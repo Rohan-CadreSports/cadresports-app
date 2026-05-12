@@ -55,7 +55,7 @@ export function RegisterButton({
 
   if (alreadyRegistered) {
     return (
-      <div className="flex items-center gap-2 p-4 bg-muted rounded-2xl">
+      <div className="flex items-center gap-2 p-4 bg-muted rounded-[10px]">
         <span className="text-sm font-medium">Registration Status:</span>
         <Badge
           variant={
@@ -72,7 +72,7 @@ export function RegisterButton({
 
   if (success) {
     return (
-      <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center">
+      <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-[10px] text-center">
         <p className="text-sm font-semibold text-emerald-700">Registration submitted!</p>
         <p className="text-xs text-emerald-600 mt-0.5">Waiting for approval from the tournament operator.</p>
       </div>
@@ -94,7 +94,7 @@ export function RegisterButton({
         Register for this League
       </Button>
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-2xl p-3">{error}</p>
+        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-[10px] p-3">{error}</p>
       )}
     </div>
   );

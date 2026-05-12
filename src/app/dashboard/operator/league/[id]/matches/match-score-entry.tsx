@@ -53,7 +53,7 @@ function BadmintonScoreForm({ matchId, label, onClose }: { matchId: string; labe
   });
 
   return (
-    <div className="bg-white border border-border rounded-xl p-3 mt-1 space-y-2">
+    <div className="bg-white border border-border rounded-[8px] p-3 mt-1 space-y-2">
       <p className="text-xs font-medium">{label}</p>
       {sets.map((set, idx) => (
         <div key={idx} className="grid grid-cols-[1fr_auto_1fr] gap-1.5 items-center">
@@ -149,7 +149,7 @@ function FootballScoreForm({ matchId, label, teams, onClose }: { matchId: string
   }
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-4 mt-2 space-y-3">
+    <div className="bg-white border border-border rounded-[10px] p-4 mt-2 space-y-3">
       <p className="text-sm font-semibold">{label}</p>
 
       {/* Full Time */}
@@ -170,7 +170,7 @@ function FootballScoreForm({ matchId, label, teams, onClose }: { matchId: string
 
       {/* Extra Time */}
       <button type="button" onClick={() => setExtraTime(!extraTime)}
-        className={`inline-action w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${
+        className={`inline-action w-full text-left py-2.5 px-3 rounded-[8px] text-sm font-medium transition-all ${
           extraTime ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-muted/50 text-muted-foreground hover:bg-muted"
         }`}>
         {extraTime ? "Extra Time ✓" : "+ Extra Time"}
@@ -216,22 +216,22 @@ function FootballScoreForm({ matchId, label, teams, onClose }: { matchId: string
 
       {/* Add Card Form */}
       {showCardForm ? (
-        <div className="space-y-2 p-3 bg-muted/30 rounded-xl border border-border-light">
+        <div className="space-y-2 p-3 bg-muted/30 rounded-[8px] border border-border-light">
           <p className="text-xs font-medium">Add Card</p>
-          <select className="w-full h-9 px-3 rounded-xl border border-border bg-white text-sm"
+          <select className="w-full h-9 px-3 rounded-[8px] border border-border bg-white text-sm"
             value={cardTeamId} onChange={(e) => { setCardTeamId(e.target.value); setCardPlayerId(""); }}>
             <option value="">Select team...</option>
             {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
           {cardTeamId && (
-            <select className="w-full h-9 px-3 rounded-xl border border-border bg-white text-sm"
+            <select className="w-full h-9 px-3 rounded-[8px] border border-border bg-white text-sm"
               value={cardPlayerId} onChange={(e) => setCardPlayerId(e.target.value)}>
               <option value="">Select player...</option>
               {selectedTeamForCard?.players.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
           )}
           <div className="grid grid-cols-2 gap-2">
-            <select className="h-9 px-3 rounded-xl border border-border bg-white text-sm"
+            <select className="h-9 px-3 rounded-[8px] border border-border bg-white text-sm"
               value={cardType} onChange={(e) => setCardType(e.target.value as "yellow" | "red")}>
               <option value="yellow">🟡 Yellow</option>
               <option value="red">🔴 Red</option>
@@ -246,7 +246,7 @@ function FootballScoreForm({ matchId, label, teams, onClose }: { matchId: string
         </div>
       ) : (
         <button type="button" onClick={() => setShowCardForm(true)}
-          className="inline-action w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium bg-muted/50 text-muted-foreground hover:bg-muted">
+          className="inline-action w-full text-left py-2.5 px-3 rounded-[8px] text-sm font-medium bg-muted/50 text-muted-foreground hover:bg-muted">
           + Add Card
         </button>
       )}

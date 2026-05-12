@@ -20,17 +20,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ].join(" ");
 
     const variants = {
-      primary: "bg-brand text-white hover:opacity-90 rounded-full",
-      secondary: "bg-accent text-accent-foreground hover:opacity-90 rounded-full",
-      outline: "border border-border text-foreground hover:bg-muted/80 rounded-full",
-      ghost: "text-muted-foreground hover:bg-muted/60 hover:text-foreground rounded-full",
-      danger: "bg-red-500 text-white hover:opacity-90 rounded-full",
+      primary: "bg-brand text-white hover:opacity-90 rounded-[8px]",
+      secondary: "bg-accent text-accent-foreground hover:opacity-90 rounded-[8px]",
+      outline: "border border-border text-foreground hover:bg-muted/80 rounded-[8px]",
+      ghost: "text-muted-foreground hover:bg-muted/60 hover:text-foreground rounded-[8px]",
+      danger: "bg-red-500 text-white hover:opacity-90 rounded-[8px]",
     };
 
     const sizes = {
-      sm: "h-10 px-5 text-sm gap-1.5",
-      md: "h-12 px-7 text-[15px] gap-2",
-      lg: "h-14 px-9 text-base gap-2",
+      sm: "h-9 px-4 text-[13px] gap-1.5",
+      md: "h-10 px-5 text-[14px] gap-2",
+      lg: "h-11 px-7 text-[15px] gap-2",
     };
 
     return (

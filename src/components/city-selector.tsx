@@ -32,12 +32,12 @@ export function CitySelector({
             }
           }}
           placeholder="Enter city name..."
-          className="flex-1 h-12 px-4 rounded-[10px] bg-surface border border-border text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand text-base transition-all"
+          className="flex-1 h-10 px-3.5 rounded-[8px] bg-surface border border-border text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand text-[14px] transition-all"
         />
         {selectedCity && (
           <button
             onClick={() => onCityChange("")}
-            className="inline-action h-12 px-5 rounded-[10px] border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+            className="inline-action h-10 px-4 rounded-[8px] border border-border text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
           >
             Clear
           </button>

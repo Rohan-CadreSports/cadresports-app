@@ -125,7 +125,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-sm space-y-5">
         {/* Header */}
         <div className="text-center">
-          <img src="/logo.png" alt="CadreSports" className="w-14 h-14 rounded-2xl mx-auto mb-4" />
+          <img src="/logo.png" alt="CadreSports" className="w-14 h-14 rounded-[10px] mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-dark">Complete Your Profile</h1>
           <p className="text-muted-foreground mt-1">Tell us about yourself to get started</p>
         </div>
@@ -138,7 +138,7 @@ export default function OnboardingPage() {
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>
+          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[8px]">{error}</div>
         )}
 
         {/* Step 1: Basic Info */}
@@ -206,7 +206,7 @@ export default function OnboardingPage() {
                     key={sport.id}
                     type="button"
                     onClick={() => toggleSport(sport.id)}
-                    className={`flex items-center gap-2 p-3 rounded-xl border transition-all text-left ${
+                    className={`flex items-center gap-2 p-3 rounded-[8px] border transition-all text-left ${
                       selectedSports.includes(sport.id)
                         ? "border-brand bg-brand/5 text-brand"
                         : "border-border hover:border-brand/50"

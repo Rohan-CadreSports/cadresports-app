@@ -51,7 +51,7 @@ export default async function OperatorDashboard() {
           { label: "Live", value: leagues.filter((l) => l.status === "IN_PROGRESS").length, color: "text-emerald-600" },
           { label: "Players", value: leagues.reduce((sum, l) => sum + l._count.registrations, 0), color: "text-blue-600" },
         ].map((stat) => (
-          <div key={stat.label} className="bg-surface border border-border-light rounded-2xl p-3 text-center shadow-[var(--shadow-xs)]">
+          <div key={stat.label} className="bg-surface border border-border-light rounded-[10px] p-3 text-center shadow-[var(--shadow-xs)]">
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
             <p className="text-xs text-muted-foreground">{stat.label}</p>
           </div>
@@ -60,7 +60,7 @@ export default async function OperatorDashboard() {
 
       {/* League list */}
       {leagues.length === 0 ? (
-        <div className="bg-surface border border-border-light rounded-2xl p-8 text-center shadow-[var(--shadow-xs)]">
+        <div className="bg-surface border border-border-light rounded-[10px] p-8 text-center shadow-[var(--shadow-xs)]">
           <Trophy className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
           <p className="text-muted-foreground font-medium">No leagues assigned yet</p>
           <p className="text-sm text-muted-foreground mt-1">The admin will assign leagues to you</p>
@@ -74,7 +74,7 @@ export default async function OperatorDashboard() {
 
             return (
               <Link key={league.id} href={`/dashboard/operator/league/${league.id}`}>
-                <div className={`relative rounded-2xl border overflow-hidden press-effect mb-2 ${
+                <div className={`relative rounded-[10px] border overflow-hidden press-effect mb-2 ${
                   isLive
                     ? "border-border bg-surface"
                     : "border-border-light bg-surface"

@@ -40,7 +40,7 @@ export function AddTeamForm({ divisionId, availablePlayers }: Props) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full py-4 border-2 border-dashed border-border rounded-2xl text-sm text-muted-foreground hover:border-brand hover:text-brand transition-colors flex items-center justify-center gap-2"
+        className="w-full py-4 border-2 border-dashed border-border rounded-[10px] text-sm text-muted-foreground hover:border-brand hover:text-brand transition-colors flex items-center justify-center gap-2"
       >
         <Plus className="w-4 h-4" /> Create Team
       </button>
@@ -72,7 +72,7 @@ export function AddTeamForm({ divisionId, availablePlayers }: Props) {
         <div>
           <label className="block text-sm font-medium text-foreground mb-1.5">Initial Captain *</label>
           <select
-            className="w-full h-11 px-4 rounded-xl border border-border bg-white text-foreground focus:outline-none focus:ring-2 focus:ring-ring text-base"
+            className="w-full h-11 px-4 rounded-[8px] border border-border bg-white text-foreground focus:outline-none focus:ring-2 focus:ring-ring text-base"
             value={captainId}
             onChange={(e) => setCaptainId(e.target.value)}
             required

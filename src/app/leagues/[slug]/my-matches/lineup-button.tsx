@@ -125,7 +125,7 @@ export function LineupButton({
                   key={player.id}
                   type="button"
                   onClick={() => toggleFootballPlayer(player.id)}
-                  className={`w-full text-left py-2.5 px-3 rounded-xl text-sm transition-all duration-150 ${
+                  className={`w-full text-left py-2.5 px-3 rounded-[8px] text-sm transition-all duration-150 ${
                     selected
                       ? "bg-brand/10 border border-brand/30 font-medium"
                       : "bg-muted/50 border border-transparent hover:bg-muted"
@@ -156,7 +156,7 @@ export function LineupButton({
                   {isDoubles ? "Doubles" : "Singles"} {match.matchNumber}
                 </p>
                 <select
-                  className="w-full h-9 px-3 rounded-xl border border-border bg-surface text-sm"
+                  className="w-full h-9 px-3 rounded-[8px] border border-border bg-surface text-sm"
                   value={selected[0] || ""}
                   onChange={(e) => {
                     setSelections({
@@ -172,7 +172,7 @@ export function LineupButton({
                 </select>
                 {isDoubles && (
                   <select
-                    className="w-full h-9 px-3 rounded-xl border border-border bg-surface text-sm"
+                    className="w-full h-9 px-3 rounded-[8px] border border-border bg-surface text-sm"
                     value={selected[1] || ""}
                     onChange={(e) => {
                       setSelections({

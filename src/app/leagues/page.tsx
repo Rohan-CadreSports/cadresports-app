@@ -74,9 +74,9 @@ export default async function LeaguesPage({
     : leagues;
 
   return (
-    <div className="px-4 py-5 pb-20 max-w-2xl mx-auto space-y-5">
+    <div className="px-4 pt-6 py-5 pb-20 max-w-2xl mx-auto space-y-5">
       <div>
-        <h1 className="text-2xl font-bold">Leagues</h1>
+        <h1 className="text-xl font-medium tracking-tight">Leagues</h1>
         <p className="text-muted-foreground text-sm mt-1">
           {searchQuery ? `Results for "${searchQuery}"` :
            filterCity ? `Showing leagues in ${filterCity}` :
@@ -94,9 +94,9 @@ export default async function LeaguesPage({
             type="text"
             defaultValue={searchQuery || ""}
             placeholder="Search leagues..."
-            className="flex-1 h-11 px-4 rounded-2xl bg-surface border border-border text-foreground text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand"
+            className="flex-1 h-10 px-3.5 rounded-[8px] bg-surface border border-border text-foreground text-[14px] placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand"
           />
-          <button type="submit" className="h-11 px-5 bg-brand text-white rounded-2xl font-medium text-sm hover:opacity-90 inline-action">
+          <button type="submit" className="h-10 px-5 bg-brand text-white rounded-[8px] font-medium text-[14px] hover:opacity-90 inline-action">
             Search
           </button>
         </div>
@@ -134,7 +134,7 @@ export default async function LeaguesPage({
             return (
               <Link key={league.id} href={`/leagues/${league.slug}`}>
                 <div
-                  className={`relative rounded-2xl overflow-hidden border transition-all duration-200 cursor-pointer press-effect mb-3 ${
+                  className={`relative rounded-[10px] overflow-hidden border transition-all duration-200 cursor-pointer press-effect mb-3 ${
                     isLive
                       ? "border-border bg-surface shadow-[var(--shadow-sm)]"
                       : "border-border-light bg-surface shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-sm)]"

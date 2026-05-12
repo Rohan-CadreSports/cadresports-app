@@ -38,14 +38,14 @@ export default function CreateFederationPage() {
   return (
     <div className="max-w-sm mx-auto px-4 py-6 space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/dashboard/admin" className="p-2 hover:bg-muted rounded-xl">
+        <Link href="/dashboard/admin" className="p-2 hover:bg-muted rounded-[8px]">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <h1 className="text-2xl font-bold">Create Federation</h1>
       </div>
 
-      {error && <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>}
-      {success && <div className="bg-green-50 text-green-700 text-sm p-3 rounded-xl">Federation created!</div>}
+      {error && <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[8px]">{error}</div>}
+      {success && <div className="bg-green-50 text-green-700 text-sm p-3 rounded-[8px]">Federation created!</div>}
 
       <Card>
         <form
