@@ -102,40 +102,46 @@ export default async function MyResultsPage({
   }
 
   return (
-    <div className="px-4 py-5 pb-20 max-w-2xl mx-auto space-y-5">
-      <div className="flex items-center gap-3">
-        <Link href={`/leagues/${slug}`} className="p-2 hover:bg-muted rounded-[8px]">
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold">My Results</h1>
-          <p className="text-sm text-muted-foreground">{league.name} &middot; {teamName}</p>
+    <div className="pb-20">
+      {/* Dark header with stats — Strava-style */}
+      <div className="bg-accent text-accent-foreground px-4 pt-5 pb-6">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-center gap-3 mb-5">
+            <Link href={`/leagues/${slug}`} className="p-2 hover:bg-white/10 rounded-[8px] transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div>
+              <h1 className="text-xl font-medium tracking-tight">My Results</h1>
+              <p className="text-sm text-accent-foreground/60">{league.name} &middot; {teamName}</p>
+            </div>
+          </div>
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-4 gap-3">
+            <div className="text-center">
+              <p className="text-2xl font-bold tabular-nums">{totalTies}</p>
+              <p className="text-[10px] tracking-soho uppercase text-accent-foreground/50 mt-0.5">Played</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold tabular-nums text-brand-light">{tiesWon}</p>
+              <p className="text-[10px] tracking-soho uppercase text-accent-foreground/50 mt-0.5">Won</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold tabular-nums text-red-400">{tiesLost}</p>
+              <p className="text-[10px] tracking-soho uppercase text-accent-foreground/50 mt-0.5">Lost</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold tabular-nums text-brand-light">{totalPointsEarned}</p>
+              <p className="text-[10px] tracking-soho uppercase text-accent-foreground/50 mt-0.5">Points</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Personal Stats */}
-      <div className="grid grid-cols-4 gap-2">
-        <Card className="text-center py-3">
-          <p className="text-xl font-bold">{totalTies}</p>
-          <p className="text-xs text-muted-foreground">Ties</p>
-        </Card>
-        <Card className="text-center py-3">
-          <p className="text-xl font-bold text-green-600">{tiesWon}</p>
-          <p className="text-xs text-muted-foreground">Won</p>
-        </Card>
-        <Card className="text-center py-3">
-          <p className="text-xl font-bold text-red-500">{tiesLost}</p>
-          <p className="text-xs text-muted-foreground">Lost</p>
-        </Card>
-        <Card className="text-center py-3">
-          <p className="text-xl font-bold text-brand">{totalPointsEarned}</p>
-          <p className="text-xs text-muted-foreground">Points</p>
-        </Card>
-      </div>
-
+      <div className="px-4 max-w-2xl mx-auto space-y-5 pt-4">
       {/* Match History */}
       <div>
-        <h2 className="text-lg font-semibold mb-3">Match History (tap to expand)</h2>
+        <p className="text-[11px] tracking-soho font-medium uppercase text-muted-foreground mb-3">Match History</p>
         {ties.length === 0 ? (
           <Card>
             <p className="text-sm text-muted-foreground text-center py-6">No completed matches yet</p>
@@ -147,6 +153,7 @@ export default async function MyResultsPage({
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

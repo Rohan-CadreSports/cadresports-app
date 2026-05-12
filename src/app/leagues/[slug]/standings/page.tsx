@@ -3,7 +3,6 @@ export const dynamic = "force-dynamic";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { ArrowLeft, Trophy } from "lucide-react";
 import { ResultCard } from "./result-card";
@@ -67,47 +66,54 @@ export default async function StandingsPage({
   }
 
   return (
-    <div className="px-4 py-5 pb-20 max-w-2xl mx-auto space-y-5">
-      <div className="flex items-center gap-3">
-        <Link href={`/leagues/${slug}`} className="p-2 hover:bg-muted rounded-[8px]">
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold">Leaderboard & Results</h1>
-          <p className="text-sm text-muted-foreground">{league.name}</p>
+    <div className="pb-20">
+      {/* Dark header */}
+      <div className="bg-accent text-accent-foreground px-4 pt-5 pb-6">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-center gap-3">
+            <Link href={`/leagues/${slug}`} className="p-2 hover:bg-white/10 rounded-[8px] transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div>
+              <h1 className="text-xl font-medium tracking-tight">Leaderboard</h1>
+              <p className="text-sm text-accent-foreground/60">{league.name}</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {league.divisions.map((div) => {
-        const divStandings = standingsByDiv.get(div.id) || [];
+      <div className="px-4 max-w-2xl mx-auto space-y-6 -mt-1">
+        {league.divisions.map((div) => {
+          const divStandings = standingsByDiv.get(div.id) || [];
 
-        return (
-          <div key={div.id} className="space-y-4">
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-brand" /> {div.name}
-            </h2>
+          return (
+            <div key={div.id} className="space-y-3">
+              <h2 className="text-base font-medium flex items-center gap-2 pt-4">
+                <Trophy className="w-4 h-4 text-brand" /> {div.name}
+              </h2>
 
-            {divStandings.length > 0 ? (
-              <StandingsTable standings={divStandings} />
-            ) : (
-              <Card>
-                <p className="text-sm text-muted-foreground text-center py-4">No standings yet</p>
-              </Card>
-            )}
+              {divStandings.length > 0 ? (
+                <StandingsTable standings={divStandings} />
+              ) : (
+                <Card>
+                  <p className="text-sm text-muted-foreground text-center py-4">No standings yet</p>
+                </Card>
+              )}
 
-            {div.ties.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-muted-foreground mb-3">Results (tap to expand)</h3>
-                <div className="space-y-2">
-                  {div.ties.map((tie) => (
-                    <ResultCard key={tie.id} tie={tie} sportSlug={league.sport.slug} />
-                  ))}
+              {div.ties.length > 0 && (
+                <div>
+                  <p className="text-[11px] tracking-soho font-medium uppercase text-muted-foreground mb-3 mt-4">Results</p>
+                  <div className="space-y-2">
+                    {div.ties.map((tie) => (
+                      <ResultCard key={tie.id} tie={tie} sportSlug={league.sport.slug} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
 import { PlayerLink } from "@/components/player-link";
 
@@ -58,39 +57,37 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
   const [open, setOpen] = useState(false);
 
   return (
-    <div
-      className={`border transition-all duration-200 overflow-hidden ${
-        open ? "border-border shadow-[var(--shadow-md)]" : "border-border-light bg-surface shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)]"
-      }`}
-    >
+    <div className={`rounded-[10px] overflow-hidden transition-all duration-200 ${
+      open ? "bg-accent text-accent-foreground" : "bg-accent/90 text-accent-foreground"
+    }`}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full p-3 sm:p-4 flex items-center justify-between text-left press-effect"
+        className="w-full p-4 flex items-center justify-between text-left active:scale-[0.99] transition-transform"
       >
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-xs text-muted-foreground">Round {tie.round}</span>
-            <Badge variant="success">
-              {tie.status === "WALKOVER" ? "W/O" : "Completed"}
-            </Badge>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[11px] uppercase tracking-wider text-accent-foreground/50 font-medium">Round {tie.round}</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand/20 text-brand-light font-medium">
+              {tie.status === "WALKOVER" ? "W/O" : "FT"}
+            </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className={`text-sm font-semibold flex-1 ${tie.winner?.id === tie.homeTeam.id ? "text-brand" : ""}`}>
+            <span className={`text-sm font-medium flex-1 ${tie.winner?.id === tie.homeTeam.id ? "text-brand-light" : "text-accent-foreground/80"}`}>
               {tie.homeTeam.name}
             </span>
-            <span className="text-base font-bold px-4 tabular-nums">
+            <span className="text-xl font-bold px-4 tabular-nums tracking-tight">
               {tie.homePoints} - {tie.awayPoints}
             </span>
-            <span className={`text-sm font-semibold flex-1 text-right ${tie.winner?.id === tie.awayTeam.id ? "text-brand" : ""}`}>
+            <span className={`text-sm font-medium flex-1 text-right ${tie.winner?.id === tie.awayTeam.id ? "text-brand-light" : "text-accent-foreground/80"}`}>
               {tie.awayTeam.name}
             </span>
           </div>
         </div>
-        <ChevronDown className={`w-4 h-4 text-muted-foreground ml-3 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-4 h-4 text-accent-foreground/40 ml-3 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && tie.matches.length > 0 && (
-        <div className="border-t border-border-light bg-muted/30 px-4 py-3 space-y-2">
+        <div className="border-t border-white/[0.08] px-4 py-3 space-y-2">
           {tie.matches.map((match) => {
             const score = match.scores[0];
             const isWonByHome = match.winnerId === tie.homeTeam.id;
@@ -104,10 +101,10 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
               .map((l) => l.player);
 
             return (
-              <div key={match.id} className="bg-surface p-3">
+              <div key={match.id} className="rounded-[8px] bg-white/[0.06] p-3">
                 <div className="flex items-center justify-center mb-2">
-                  <span className={`text-xs font-semibold px-2 py-0.5 ${
-                    match.format === "DOUBLES" ? "bg-blue-50 text-blue-700" : "bg-muted text-muted-foreground"
+                  <span className={`text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                    match.format === "DOUBLES" ? "bg-blue-500/20 text-blue-300" : "bg-white/10 text-accent-foreground/50"
                   }`}>
                     {match.format === "SINGLES" ? "Singles" : "Doubles"} {match.matchNumber}
                   </span>
@@ -115,33 +112,33 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
 
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <p className={`text-xs font-medium mb-0.5 ${isWonByHome ? "text-brand" : "text-muted-foreground"}`}>
+                    <p className={`text-[11px] font-medium mb-0.5 ${isWonByHome ? "text-brand-light" : "text-accent-foreground/50"}`}>
                       {tie.homeTeam.name}
                     </p>
                     {homePlayers.map((player) => (
-                      <p key={player.id} className={`text-sm ${isWonByHome ? "font-semibold" : ""}`}>
-                        <PlayerLink id={player.id} name={player.name} />
+                      <p key={player.id} className={`text-[13px] ${isWonByHome ? "font-medium text-accent-foreground" : "text-accent-foreground/70"}`}>
+                        <PlayerLink id={player.id} name={player.name} className="!text-inherit hover:!text-brand-light" />
                       </p>
                     ))}
                   </div>
                   <div className="text-center px-3 shrink-0">
                     {score ? (
-                      <span className="text-sm font-bold tabular-nums">
+                      <span className="text-sm font-bold tabular-nums text-accent-foreground">
                         {formatScore(score.scoreData, sportSlug)}
                       </span>
                     ) : match.status === "WALKOVER" ? (
-                      <span className="text-xs text-red-500 font-semibold">W/O</span>
+                      <span className="text-[11px] text-red-400 font-medium">W/O</span>
                     ) : (
-                      <span className="text-xs text-muted-foreground">vs</span>
+                      <span className="text-[11px] text-accent-foreground/40">vs</span>
                     )}
                   </div>
                   <div className="flex-1 min-w-0 text-right">
-                    <p className={`text-xs font-medium mb-0.5 ${isWonByAway ? "text-brand" : "text-muted-foreground"}`}>
+                    <p className={`text-[11px] font-medium mb-0.5 ${isWonByAway ? "text-brand-light" : "text-accent-foreground/50"}`}>
                       {tie.awayTeam.name}
                     </p>
                     {awayPlayers.map((player) => (
-                      <p key={player.id} className={`text-sm ${isWonByAway ? "font-semibold" : ""}`}>
-                        <PlayerLink id={player.id} name={player.name} />
+                      <p key={player.id} className={`text-[13px] ${isWonByAway ? "font-medium text-accent-foreground" : "text-accent-foreground/70"}`}>
+                        <PlayerLink id={player.id} name={player.name} className="!text-inherit hover:!text-brand-light" />
                       </p>
                     ))}
                   </div>
@@ -155,9 +152,9 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
                   ];
                   if (allCards.length === 0) return null;
                   return (
-                    <div className="mt-2 pt-2 border-t border-border-light space-y-1">
+                    <div className="mt-2 pt-2 border-t border-white/[0.08] space-y-1">
                       {allCards.map((c, i) => (
-                        <p key={i} className="text-xs text-muted-foreground">
+                        <p key={i} className="text-[11px] text-accent-foreground/50">
                           {c.type === "red" ? "🔴" : "🟡"} {c.playerName} ({c.team}){c.minute ? ` ${c.minute}'` : ""}
                         </p>
                       ))}
