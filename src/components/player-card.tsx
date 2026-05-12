@@ -45,38 +45,58 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
     year: "numeric",
   });
 
-  async function handleShare() {
-    const shareData = {
-      title: `${player.name} — CadreSports`,
-      text: `Check out ${player.name}'s player profile on CadreSports`,
-      url: profileUrl,
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch {
-        // user cancelled
-      }
-    } else {
-      await navigator.clipboard.writeText(profileUrl);
-      alert("Profile link copied!");
-    }
-  }
-
-  async function handleDownload() {
-    if (!cardRef.current) return;
-    // Dynamically import html2canvas only when needed
+  async function generateCardBlob(): Promise<Blob> {
+    if (!cardRef.current) throw new Error("Card not rendered");
     const html2canvas = (await import("html2canvas-pro")).default;
     const canvas = await html2canvas(cardRef.current, {
       scale: 3,
       backgroundColor: "#F9F8F4",
       useCORS: true,
     });
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob!), "image/png");
+    });
+  }
+
+  async function handleShare() {
+    try {
+      const blob = await generateCardBlob();
+      const file = new File(
+        [blob],
+        `${player.name.replace(/\s+/g, "-")}-cadresports.png`,
+        { type: "image/png" }
+      );
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `${player.name} — CadreSports`,
+          text: `${profileUrl}`,
+        });
+      } else if (navigator.share) {
+        // Fallback: share link if file sharing not supported
+        await navigator.share({
+          title: `${player.name} — CadreSports`,
+          text: `Check out ${player.name}'s player profile on CadreSports`,
+          url: profileUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(profileUrl);
+        alert("Profile link copied!");
+      }
+    } catch {
+      // user cancelled or error
+    }
+  }
+
+  async function handleDownload() {
+    const blob = await generateCardBlob();
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.download = `${player.name.replace(/\s+/g, "-")}-cadresports-card.png`;
-    link.href = canvas.toDataURL("image/png");
+    link.href = url;
     link.click();
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -109,11 +129,17 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
               )}
             </div>
 
-            {/* QR Code */}
+            {/* QR Code — clickable link on web */}
             {qrDataUrl && (
-              <div className="shrink-0 ml-3">
+              <a
+                href={profileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 ml-3 inline-action"
+                title="Scan or tap to view profile"
+              >
                 <img src={qrDataUrl} alt="QR Code" className="w-[72px] h-[72px]" />
-              </div>
+              </a>
             )}
           </div>
 
