@@ -71,7 +71,7 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
         await navigator.share({
           files: [file],
           title: `${player.name} — CadreSports`,
-          text: `${profileUrl}`,
+          text: `Check out ${player.name}'s profile on CadreSports\n${profileUrl}`,
         });
       } else if (navigator.share) {
         // Fallback: share link if file sharing not supported
@@ -167,6 +167,13 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
               <p className="text-[9px] tracking-soho font-sans uppercase text-muted-foreground">Member since</p>
               <p className="text-xs font-semibold font-sans">{memberSince}</p>
             </div>
+          </div>
+
+          {/* Profile URL — visible on the exported image */}
+          <div className="mt-2 pt-2 border-t border-[#E5E2DA]">
+            <p className="text-[8px] font-sans text-muted-foreground truncate">
+              View my profile: {profileUrl}
+            </p>
           </div>
         </div>
       </div>
