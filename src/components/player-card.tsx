@@ -54,7 +54,7 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
       useCORS: true,
     });
     return new Promise((resolve) => {
-      canvas.toBlob((blob) => resolve(blob!), "image/png");
+      canvas.toBlob((blob) => resolve(blob!), "image/jpeg", 0.92);
     });
   }
 
@@ -63,8 +63,8 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
       const blob = await generateCardBlob();
       const file = new File(
         [blob],
-        `${player.name.replace(/\s+/g, "-")}-cadresports.png`,
-        { type: "image/png" }
+        `${player.name.replace(/\s+/g, "-")}-cadresports.jpg`,
+        { type: "image/jpeg" }
       );
 
       if (navigator.canShare?.({ files: [file] })) {
@@ -93,7 +93,7 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
     const blob = await generateCardBlob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.download = `${player.name.replace(/\s+/g, "-")}-cadresports-card.png`;
+    link.download = `${player.name.replace(/\s+/g, "-")}-cadresports-card.jpg`;
     link.href = url;
     link.click();
     URL.revokeObjectURL(url);
