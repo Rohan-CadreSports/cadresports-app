@@ -98,6 +98,7 @@ export const leagueRouter = router({
         mode: z.enum(["TEAM", "INDIVIDUAL"]).default("TEAM"),
         genderRestriction: z.enum(["OPEN", "MENS_ONLY", "WOMENS_ONLY"]).default("OPEN"),
         description: z.string().max(5000).optional(),
+        imageUrl: z.string().url().max(2000).optional(),
         rules: z.string().optional(),
         city: z.string().min(1).max(100),
         state: z.string().max(100).optional(),
@@ -182,6 +183,7 @@ export const leagueRouter = router({
           mode: input.mode,
           genderRestriction: input.genderRestriction,
           description: input.description,
+          imageUrl: input.imageUrl || null,
           rules: input.rules,
           city: input.city,
           state: input.state || null,
@@ -229,6 +231,22 @@ export const leagueRouter = router({
       return ctx.db.league.update({
         where: { id: input.leagueId },
         data: { operatorId: input.newOperatorId },
+      });
+    }),
+
+  updateImage: protectedProcedure
+    .use(requireRole("TOURNAMENT_OPERATOR"))
+    .input(
+      z.object({
+        leagueId: z.string(),
+        imageUrl: z.string().url().max(2000).or(z.literal("")),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await verifyLeagueOwnership(ctx.db, input.leagueId, ctx.session.user.id, ctx.session.user.role);
+      return ctx.db.league.update({
+        where: { id: input.leagueId },
+        data: { imageUrl: input.imageUrl || null },
       });
     }),
 

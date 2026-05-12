@@ -82,7 +82,7 @@ export default async function LeagueManagePage({
         </div>
       </div>
 
-      <LeagueActions leagueId={league.id} currentStatus={league.status} />
+      <LeagueActions leagueId={league.id} currentStatus={league.status} currentImageUrl={league.imageUrl} />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <Link href={`/dashboard/operator/league/${league.id}/registrations`}>

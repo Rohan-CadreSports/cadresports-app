@@ -226,6 +226,7 @@ model League {
   genderRestriction LeagueGender  @default(OPEN)
   status          LeagueStatus    @default(DRAFT)
   description     String?
+  imageUrl        String?
   rules           String?         @db.Text
   city            String?
   state           String?

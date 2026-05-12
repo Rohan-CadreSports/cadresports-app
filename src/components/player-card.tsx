@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { Share2, ImageDown, Loader2 } from "lucide-react";
+import { Share2, Download, Loader2 } from "lucide-react";
 
 interface PlayerCardProps {
   player: {
@@ -94,33 +94,20 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
   async function handleSave() {
     setBusy("save");
     try {
-      const dataUrl = await generateCardDataUrl();
-      // Open the image in a new tab — user can long-press to save on mobile
-      // or right-click save on desktop. This is the most reliable cross-browser method.
-      const w = window.open("");
-      if (w) {
-        w.document.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta name="viewport" content="width=device-width,initial-scale=1">
-            <title>${player.name} — CadreSports Card</title>
-            <style>
-              body { margin: 0; background: #1A1A1A; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-              img { max-width: 100%; height: auto; display: block; }
-              p { color: #888; text-align: center; font-family: system-ui; font-size: 14px; padding: 16px; }
-            </style>
-          </head>
-          <body>
-            <div>
-              <img src="${dataUrl}" alt="${player.name} Card" />
-              <p>Long press the image to save</p>
-            </div>
-          </body>
-          </html>
-        `);
-        w.document.close();
-      }
+      if (!cardRef.current) return;
+      const html2canvas = (await import("html2canvas-pro")).default;
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 3,
+        backgroundColor: "#FFFEF7",
+        useCORS: true,
+      });
+      const dataUrl = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `${player.name.replace(/\s+/g, "-")}-cadresports-card.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch {
       // fallback
     } finally {
@@ -211,8 +198,8 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
           disabled={busy !== null}
           className="flex items-center justify-center gap-2 h-12 border border-border text-foreground font-sans text-sm font-semibold active:scale-[0.97] transition-all duration-150 disabled:opacity-50"
         >
-          {busy === "save" ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageDown className="w-4 h-4" />}
-          Save Card
+          {busy === "save" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          Download PNG
         </button>
       </div>
     </div>

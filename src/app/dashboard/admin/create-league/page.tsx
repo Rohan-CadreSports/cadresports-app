@@ -18,6 +18,7 @@ export default function AdminCreateLeaguePage() {
   // 1. League Name
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
   // 2. Dates
   const [startDate, setStartDate] = useState("");
@@ -160,6 +161,7 @@ export default function AdminCreateLeaguePage() {
       mode,
       genderRestriction,
       description: description || undefined,
+      imageUrl: imageUrl || undefined,
       city: city.trim(),
       state: state || undefined,
       venue: venue || undefined,
@@ -203,6 +205,13 @@ export default function AdminCreateLeaguePage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+          />
+          <Input
+            id="imageUrl"
+            label="League Image URL"
+            placeholder="https://example.com/league-photo.jpg"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
           />
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">

@@ -1,9 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ImageIcon, Check } from "lucide-react";
 
 const STATUS_FLOW: Record<string, { next: string; label: string; variant: "primary" | "secondary" | "danger" }[]> = {
   DRAFT: [
@@ -26,13 +28,18 @@ const STATUS_FLOW: Record<string, { next: string; label: string; variant: "prima
 export function LeagueActions({
   leagueId,
   currentStatus,
+  currentImageUrl,
 }: {
   leagueId: string;
   currentStatus: string;
+  currentImageUrl?: string | null;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showImageEdit, setShowImageEdit] = useState(false);
+  const [imageUrl, setImageUrl] = useState(currentImageUrl || "");
+  const [imageSaved, setImageSaved] = useState(false);
 
   const updateStatus = trpc.league.updateStatus.useMutation({
     onSuccess: () => {
@@ -46,10 +53,21 @@ export function LeagueActions({
     },
   });
 
+  const updateImage = trpc.league.updateImage.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      setImageSaved(true);
+      setTimeout(() => setImageSaved(false), 2000);
+    },
+    onError: (err) => {
+      setError(err.message);
+    },
+  });
+
   const actions = STATUS_FLOW[currentStatus] || [];
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
         {actions.map((action) => (
           <Button
@@ -72,10 +90,38 @@ export function LeagueActions({
             {action.label}
           </Button>
         ))}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowImageEdit(!showImageEdit)}
+        >
+          <ImageIcon className="w-4 h-4 mr-1" />
+          {showImageEdit ? "Close" : "Change Image"}
+        </Button>
       </div>
-      {error && (
-        <p className="text-sm text-red-500">{error}</p>
+
+      {showImageEdit && (
+        <div className="flex gap-2 items-end">
+          <div className="flex-1">
+            <Input
+              id="leagueImage"
+              label="League Card Image URL"
+              placeholder="https://example.com/photo.jpg"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+            />
+          </div>
+          <Button
+            size="sm"
+            loading={updateImage.isPending}
+            onClick={() => updateImage.mutate({ leagueId, imageUrl })}
+          >
+            {imageSaved ? <Check className="w-4 h-4" /> : "Save"}
+          </Button>
+        </div>
       )}
+
+      {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
 }
