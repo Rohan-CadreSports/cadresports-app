@@ -18,8 +18,9 @@ interface Props {
     matchesPlayed: number;
     wins: number;
   };
+  qrDataUrl: string;
 }
 
-export function PlayerCardWrapper({ player, stats }: Props) {
-  return <PlayerCard player={player} stats={stats} />;
+export function PlayerCardWrapper({ player, stats, qrDataUrl }: Props) {
+  return <PlayerCard player={player} stats={stats} qrDataUrl={qrDataUrl} />;
 }

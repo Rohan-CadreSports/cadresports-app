@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import QRCode from "qrcode";
+import { headers } from "next/headers";
 import { PlayerCardWrapper } from "./player-card-wrapper";
 
 export default async function PlayerProfilePage({
@@ -73,6 +75,18 @@ export default async function PlayerProfilePage({
     take: 5,
   });
 
+  // Generate QR code server-side so card renders instantly
+  const headersList = await headers();
+  const host = headersList.get("host") || "cadresports-app.vercel.app";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const profileUrl = `${protocol}://${host}/players/${id}`;
+  const qrDataUrl = await QRCode.toDataURL(profileUrl, {
+    width: 120,
+    margin: 1,
+    color: { dark: "#1A1A1A", light: "#FFFEF7" },
+    errorCorrectionLevel: "M",
+  });
+
   return (
     <div className="pb-20">
       {/* Card — full bleed on mobile, no padding */}
@@ -89,6 +103,7 @@ export default async function PlayerProfilePage({
             image: user.image,
           }}
           stats={{ leaguesPlayed, matchesPlayed, wins }}
+          qrDataUrl={qrDataUrl}
         />
       </div>
 

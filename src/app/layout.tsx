@@ -57,7 +57,7 @@ export default function RootLayout({
       <body className="bg-background text-foreground overflow-hidden">
         <AuthProvider>
           <TRPCProvider>
-            <div className="relative h-screen w-full flex flex-col">
+            <div className="relative h-dvh w-full flex flex-col">
               <Navbar />
               <ScrollReset />
               <main className="flex-1 overflow-y-auto overscroll-contain pb-16 md:pb-0">
