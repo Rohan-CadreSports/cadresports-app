@@ -76,7 +76,7 @@ export default async function MyResultsPage({
           scores: { orderBy: { createdAt: "desc" }, take: 1 },
           lineup: {
             include: {
-              player: { select: { name: true } },
+              player: { select: { id: true, name: true } },
               lineup: { select: { teamId: true } },
             },
           },

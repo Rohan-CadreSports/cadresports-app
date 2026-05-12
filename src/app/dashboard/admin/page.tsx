@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, Trophy, Zap, Plus, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { PlayerLink, PlayerAvatar } from "@/components/player-link";
 
 export default async function AdminDashboard() {
   const session = await requireRole("SUPER_ADMIN");
@@ -154,11 +155,9 @@ export default async function AdminDashboard() {
           {recentUsers.map((user) => (
             <div key={user.id} className="flex items-center justify-between py-2.5 px-3 bg-surface border border-border-light rounded-xl">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 bg-brand/10 rounded-full flex items-center justify-center shrink-0">
-                  <span className="text-xs font-bold text-brand">{user.name[0]?.toUpperCase()}</span>
-                </div>
+                <PlayerAvatar id={user.id} name={user.name} size="sm" className="!bg-brand/10 !text-brand" />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium truncate">{user.name}</p>
+                  <p className="text-sm font-medium truncate"><PlayerLink id={user.id} name={user.name} /></p>
                   <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                 </div>
               </div>

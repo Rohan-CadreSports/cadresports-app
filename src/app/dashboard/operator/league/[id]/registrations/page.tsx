@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { RegistrationActions } from "./registration-actions";
+import { PlayerLink, PlayerAvatar } from "@/components/player-link";
 
 export default async function RegistrationsPage({
   params,
@@ -71,11 +72,9 @@ export default async function RegistrationsPage({
             {pending.map((reg) => (
               <Card key={reg.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-brand rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    {reg.player.name[0]?.toUpperCase() ?? "?"}
-                  </div>
+                  <PlayerAvatar id={reg.player.id} name={reg.player.name} size="md" />
                   <div>
-                    <p className="text-sm font-medium">{reg.player.name}</p>
+                    <p className="text-sm font-medium"><PlayerLink id={reg.player.id} name={reg.player.name} /></p>
                     <p className="text-xs text-muted-foreground">
                       {reg.player.email}
                       {reg.player.city && ` · ${reg.player.city}`}
@@ -97,7 +96,7 @@ export default async function RegistrationsPage({
               {approved.map((reg) => (
                 <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-green-50 rounded-xl">
                   <div>
-                    <p className="text-sm font-medium">{reg.player.name}</p>
+                    <p className="text-sm font-medium"><PlayerLink id={reg.player.id} name={reg.player.name} /></p>
                     <p className="text-xs text-muted-foreground">{reg.player.email}</p>
                   </div>
                   <span className="text-xs text-green-700 font-medium">Approved</span>
@@ -121,7 +120,7 @@ export default async function RegistrationsPage({
               {rejected.map((reg) => (
                 <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-red-50 rounded-xl">
                   <div>
-                    <p className="text-sm font-medium">{reg.player.name}</p>
+                    <p className="text-sm font-medium"><PlayerLink id={reg.player.id} name={reg.player.name} /></p>
                     <p className="text-xs text-muted-foreground">{reg.player.email}</p>
                   </div>
                   <span className="text-xs text-red-600 font-medium">Rejected</span>

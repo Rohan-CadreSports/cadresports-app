@@ -6,6 +6,7 @@ import { matchRouter } from "./routers/match";
 import { registrationRouter } from "./routers/registration";
 import { sportRouter } from "./routers/sport";
 import { adminRouter } from "./routers/admin";
+import { playerRouter } from "./routers/player";
 
 export const appRouter = router({
   auth: authRouter,
@@ -15,6 +16,7 @@ export const appRouter = router({
   registration: registrationRouter,
   sport: sportRouter,
   admin: adminRouter,
+  player: playerRouter,
 });
 
 export type AppRouter = typeof appRouter;

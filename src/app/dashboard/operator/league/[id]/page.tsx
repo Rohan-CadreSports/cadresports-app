@@ -9,6 +9,7 @@ import { Users, Calendar, MapPin, Swords, UserPlus, Check, X, Trophy } from "luc
 import { LeagueActions } from "./league-actions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { PlayerLink, PlayerAvatar } from "@/components/player-link";
 
 export default async function LeagueManagePage({
   params,
@@ -133,11 +134,9 @@ export default async function LeagueManagePage({
               {accepted.map((reg) => (
                 <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-green-50 rounded-xl">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                      {reg.player.name[0]?.toUpperCase() ?? "?"}
-                    </div>
+                    <PlayerAvatar id={reg.player.id} name={reg.player.name} size="sm" className="!bg-green-600" />
                     <div>
-                      <p className="text-sm font-medium">{reg.player.name}</p>
+                      <p className="text-sm font-medium"><PlayerLink id={reg.player.id} name={reg.player.name} /></p>
                       <p className="text-xs text-muted-foreground">{reg.player.email}</p>
                     </div>
                   </div>
@@ -159,7 +158,7 @@ export default async function LeagueManagePage({
               {declined.map((reg) => (
                 <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-red-50 rounded-xl">
                   <div>
-                    <p className="text-sm font-medium">{reg.player.name}</p>
+                    <p className="text-sm font-medium"><PlayerLink id={reg.player.id} name={reg.player.name} /></p>
                     <p className="text-xs text-muted-foreground">{reg.player.email}</p>
                   </div>
                   <Badge variant="danger">Declined</Badge>
@@ -191,7 +190,7 @@ export default async function LeagueManagePage({
                       <div key={team.id} className="flex items-center justify-between py-2 px-3 bg-muted rounded-xl">
                         <div>
                           <p className="text-sm font-medium">{team.name}</p>
-                          <p className="text-xs text-muted-foreground">Captain: {team.captain.name}</p>
+                          <p className="text-xs text-muted-foreground">Captain: <PlayerLink id={team.captain.id} name={team.captain.name} /></p>
                         </div>
                         <span className="text-xs text-muted-foreground">{team._count.players} players</span>
                       </div>
@@ -212,7 +211,7 @@ export default async function LeagueManagePage({
               {pending.slice(0, 5).map((reg) => (
                 <div key={reg.id} className="flex items-center justify-between py-2 px-3 bg-yellow-50 rounded-xl">
                   <div>
-                    <p className="text-sm font-medium">{reg.player.name}</p>
+                    <p className="text-sm font-medium"><PlayerLink id={reg.player.id} name={reg.player.name} /></p>
                     <p className="text-xs text-muted-foreground">{reg.player.email}</p>
                   </div>
                   <Badge variant="warning">Pending</Badge>

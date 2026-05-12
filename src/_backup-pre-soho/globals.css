@@ -1,32 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand — kept */
   --brand-primary: #00967B;
   --brand-dark: #0D0D0D;
   --brand-white: #FFFFFF;
   --brand-primary-light: #00b894;
   --brand-primary-dark: #007a64;
-
-  /* Soho Paper palette */
-  --background: #F9F8F4;
-  --foreground: #1A1A1A;
+  --background: #FAFAFA;
+  --foreground: #0D0D0D;
   --surface: #FFFFFF;
-  --muted: #F0EDE6;
-  --muted-foreground: #8A8578;
-  --border: #E5E2DA;
-  --border-light: #EDEBE5;
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
+  --border: #E5E7EB;
+  --border-light: #F3F4F6;
   --ring: #00967B;
 
-  /* Soho accent — deep sports green */
-  --accent: #2C3E30;
-  --accent-foreground: #F9F8F4;
-
-  --shadow-xs: 0 1px 2px rgba(0,0,0,0.03);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.03);
-  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.03);
-  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.06), 0 8px 10px -6px rgba(0,0,0,0.03);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.06), 0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
 
   --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -48,10 +41,7 @@
   --color-border: var(--border);
   --color-border-light: var(--border-light);
   --color-ring: var(--ring);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -70,22 +60,14 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, sans-serif;
   line-height: 1.6;
   letter-spacing: -0.011em;
   -webkit-text-size-adjust: 100%;
 }
 
-/* Serif headings — Soho editorial */
-h1, h2, h3 {
-  font-family: var(--font-playfair), Georgia, serif;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-}
-
-h4, h5, h6 {
-  letter-spacing: -0.015em;
-  line-height: 1.25;
+h1, h2, h3, h4 {
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 /* Touch targets — 44px minimum */
@@ -117,11 +99,11 @@ input, select, textarea {
   transform: scale(0.97);
 }
 
-/* Backdrop blur for nav bars — warm paper tint */
+/* Backdrop blur for nav bars */
 .backdrop-blur-surface {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  background: rgba(249, 248, 244, 0.85);
+  background: rgba(255, 255, 255, 0.85);
 }
 
 /* Safe area for notch/home indicator */
@@ -130,16 +112,6 @@ input, select, textarea {
 }
 .safe-area-top {
   padding-top: env(safe-area-inset-top, 0px);
-}
-
-/* No-scrollbar utility — for horizontal carousels */
-.no-scrollbar {
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 
 /* Horizontal scroll container for tables on mobile */
@@ -154,7 +126,7 @@ input, select, textarea {
 /* Scrollbar styling (desktop) */
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 6px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
@@ -173,21 +145,4 @@ input, select, textarea {
   body {
     overscroll-behavior-y: contain;
   }
-}
-
-/* Soho image treatment — warm, film-like */
-.soho-img {
-  filter: sepia(0.08) contrast(1.05) brightness(0.98);
-}
-
-/* Soho divider */
-.soho-divider {
-  height: 1px;
-  background: var(--border);
-  border: none;
-}
-
-/* Tracking utilities */
-.tracking-soho {
-  letter-spacing: 0.15em;
 }

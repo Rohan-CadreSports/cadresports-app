@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Calendar } from "lucide-react";
 import { CitySelector } from "@/components/city-selector";
+import { getSportImage } from "@/lib/sport-images";
 
 interface LeagueItem {
   id: string;
@@ -47,7 +49,7 @@ export function HomeLeagues({
   return (
     <>
       {/* City Selector */}
-      <section className="py-6 px-4 sm:px-6 border-b border-border-light">
+      <section className="py-8 px-5 sm:px-8 border-b border-border-light">
         <div className="max-w-3xl mx-auto">
           <CitySelector selectedCity={selectedCity} onCityChange={setSelectedCity} />
         </div>
@@ -55,8 +57,8 @@ export function HomeLeagues({
 
       {/* No results */}
       {selectedCity && active.length === 0 && upcoming.length === 0 && (
-        <section className="py-12 px-4 text-center">
-          <p className="text-muted-foreground">No leagues found in {selectedCity}</p>
+        <section className="py-16 px-5 text-center">
+          <p className="text-muted-foreground font-sans">No leagues found in {selectedCity}</p>
           <button
             onClick={() => setSelectedCity("")}
             className="inline-action text-sm text-brand font-medium mt-2 hover:underline"
@@ -66,31 +68,41 @@ export function HomeLeagues({
         </section>
       )}
 
-      {/* Active Leagues */}
+      {/* Active Leagues — horizontal carousel */}
       {active.length > 0 && (
-        <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto w-full">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl font-bold tracking-tight">Live Leagues</h2>
-            <Link href="/leagues" className="inline-action text-sm text-brand font-semibold hover:underline">View all</Link>
+        <section className="py-10">
+          <div className="px-5 sm:px-8 flex justify-between items-end mb-6 max-w-7xl mx-auto">
+            <div>
+              <p className="text-[10px] tracking-soho font-sans font-medium uppercase text-muted-foreground mb-1">Now Playing</p>
+              <h2 className="font-serif text-2xl tracking-tight">Live Leagues</h2>
+            </div>
+            <Link href="/leagues" className="inline-action text-[10px] tracking-soho font-sans font-medium uppercase border-b border-foreground pb-0.5 hover:text-brand hover:border-brand transition-colors">
+              View All
+            </Link>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {active.map((league) => (
-              <LeagueCard key={league.id} league={league} />
+          <div className="flex gap-4 overflow-x-auto px-5 sm:px-8 no-scrollbar snap-x snap-mandatory pb-2">
+            {active.map((league, i) => (
+              <LeagueCard key={league.id} league={league} index={i} />
             ))}
           </div>
         </section>
       )}
 
-      {/* Upcoming */}
+      {/* Upcoming — horizontal carousel */}
       {upcoming.length > 0 && (
-        <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto w-full">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl font-bold tracking-tight">Open for Registration</h2>
-            <Link href="/leagues" className="inline-action text-sm text-brand font-semibold hover:underline">View all</Link>
+        <section className="py-10 border-t border-border-light">
+          <div className="px-5 sm:px-8 flex justify-between items-end mb-6 max-w-7xl mx-auto">
+            <div>
+              <p className="text-[10px] tracking-soho font-sans font-medium uppercase text-muted-foreground mb-1">Join Now</p>
+              <h2 className="font-serif text-2xl tracking-tight">Open for Registration</h2>
+            </div>
+            <Link href="/leagues" className="inline-action text-[10px] tracking-soho font-sans font-medium uppercase border-b border-foreground pb-0.5 hover:text-brand hover:border-brand transition-colors">
+              View All
+            </Link>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {upcoming.map((league) => (
-              <LeagueCard key={league.id} league={league} />
+          <div className="flex gap-4 overflow-x-auto px-5 sm:px-8 no-scrollbar snap-x snap-mandatory pb-2">
+            {upcoming.map((league, i) => (
+              <LeagueCard key={league.id} league={league} index={i} />
             ))}
           </div>
         </section>
@@ -99,58 +111,68 @@ export function HomeLeagues({
   );
 }
 
-function LeagueCard({ league }: { league: LeagueItem }) {
+function LeagueCard({ league, index }: { league: LeagueItem; index: number }) {
   const isLive = league.status === "IN_PROGRESS";
-  const isOpen = league.status === "REGISTRATION_OPEN";
+  const imageUrl = getSportImage(league.sport.name, index);
 
   return (
-    <Link href={`/leagues/${league.slug}`}>
-      <div
-        className={`relative rounded-2xl overflow-hidden border transition-all duration-200 cursor-pointer h-full press-effect ${
-          isLive
-            ? "border-border bg-surface shadow-[var(--shadow-sm)]"
-            : "border-border-light bg-surface shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-sm)]"
-        }`}
-      >
-        <div className={`absolute left-0 top-0 bottom-0 w-1 ${isLive ? "bg-brand" : "bg-blue-500"}`} />
-
-        <div className="p-5 pl-6">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-base font-semibold tracking-tight truncate">{league.name}</h3>
-            <Badge variant={isLive ? "success" : "info"} className="shrink-0">
+    <Link href={`/leagues/${league.slug}`} className="min-w-[80%] sm:min-w-[340px] snap-start">
+      <div className="border border-border-light bg-surface overflow-hidden transition-all duration-200 press-effect hover:shadow-[var(--shadow-md)]">
+        {/* Sport image */}
+        <div className="relative aspect-[16/9] bg-muted overflow-hidden">
+          <Image
+            src={imageUrl}
+            alt={league.sport.name}
+            fill
+            className="object-cover soho-img"
+            sizes="(max-width: 640px) 80vw, 340px"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          <div className="absolute top-3 right-3">
+            <Badge variant={isLive ? "success" : "info"} className="backdrop-blur-sm bg-white/90">
               {isLive ? "Live" : "Open"}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-0.5">{league.sport.name}</p>
+          {/* Sport tag */}
+          <div className="absolute bottom-3 left-3">
+            <span className="text-[9px] tracking-soho font-sans font-medium uppercase text-white/80">
+              {league.sport.name}
+            </span>
+          </div>
+        </div>
+
+        {/* Details */}
+        <div className="p-4">
+          <h3 className="font-serif text-lg leading-tight tracking-tight truncate">{league.name}</h3>
 
           {(league.startDate || league.endDate) && (
-            <div className="flex items-center gap-1.5 mt-2.5 text-sm text-foreground">
+            <div className="flex items-center gap-1.5 mt-2 text-sm text-foreground">
               <Calendar className="w-3.5 h-3.5 text-brand" />
-              <span className="font-medium">
+              <span className="font-sans text-xs font-medium">
                 {formatShortDate(league.startDate)}
                 {league.endDate && <> — {formatShortDate(league.endDate)}</>}
               </span>
             </div>
           )}
 
-          {isOpen && league.registrationEnd && (
-            <p className="text-xs text-amber-600 font-medium mt-1">
+          {isLive === false && league.registrationEnd && (
+            <p className="text-[11px] text-amber-600 font-sans font-medium mt-1.5">
               Register by {formatShortDate(league.registrationEnd)}
             </p>
           )}
 
-          <div className="flex items-center gap-3 mt-2.5 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3 mt-2.5 text-xs text-muted-foreground font-sans">
             {league.city && (
               <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5" /> {league.city}
+                <MapPin className="w-3 h-3" /> {league.city}
               </span>
             )}
             <span className="flex items-center gap-1">
-              <Users className="w-3.5 h-3.5" /> {league._count.registrations}
+              <Users className="w-3 h-3" /> {league._count.registrations}
             </span>
             {league.genderRestriction !== "OPEN" && (
               <Badge variant={league.genderRestriction === "WOMENS_ONLY" ? "danger" : "info"}>
-                {league.genderRestriction === "WOMENS_ONLY" ? "Women's Only" : "Men's Only"}
+                {league.genderRestriction === "WOMENS_ONLY" ? "Women's" : "Men's"}
               </Badge>
             )}
           </div>

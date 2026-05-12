@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
+import { PlayerLink } from "@/components/player-link";
 
 interface MatchLineup {
-  player: { name: string };
+  player: { id: string; name: string };
   lineup: { teamId: string };
 }
 
@@ -58,7 +59,7 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
 
   return (
     <div
-      className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+      className={`border transition-all duration-200 overflow-hidden ${
         open ? "border-border shadow-[var(--shadow-md)]" : "border-border-light bg-surface shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)]"
       }`}
     >
@@ -95,33 +96,32 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
             const isWonByHome = match.winnerId === tie.homeTeam.id;
             const isWonByAway = match.winnerId === tie.awayTeam.id;
 
-            // Group players by team
             const homePlayers = match.lineup
               .filter((l) => l.lineup.teamId === tie.homeTeam.id)
-              .map((l) => l.player.name);
+              .map((l) => l.player);
             const awayPlayers = match.lineup
               .filter((l) => l.lineup.teamId === tie.awayTeam.id)
-              .map((l) => l.player.name);
+              .map((l) => l.player);
 
             return (
-              <div key={match.id} className="bg-surface rounded-xl p-3">
-                {/* Match type label */}
+              <div key={match.id} className="bg-surface p-3">
                 <div className="flex items-center justify-center mb-2">
-                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
+                  <span className={`text-xs font-semibold px-2 py-0.5 ${
                     match.format === "DOUBLES" ? "bg-blue-50 text-blue-700" : "bg-muted text-muted-foreground"
                   }`}>
                     {match.format === "SINGLES" ? "Singles" : "Doubles"} {match.matchNumber}
                   </span>
                 </div>
 
-                {/* Players + score in center (same layout as tie header) */}
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <p className={`text-xs font-medium mb-0.5 ${isWonByHome ? "text-brand" : "text-muted-foreground"}`}>
                       {tie.homeTeam.name}
                     </p>
-                    {homePlayers.map((name, i) => (
-                      <p key={i} className={`text-sm ${isWonByHome ? "font-semibold" : ""}`}>{name}</p>
+                    {homePlayers.map((player) => (
+                      <p key={player.id} className={`text-sm ${isWonByHome ? "font-semibold" : ""}`}>
+                        <PlayerLink id={player.id} name={player.name} />
+                      </p>
                     ))}
                   </div>
                   <div className="text-center px-3 shrink-0">
@@ -139,13 +139,14 @@ export function ResultCard({ tie, sportSlug }: { tie: TieResult; sportSlug: stri
                     <p className={`text-xs font-medium mb-0.5 ${isWonByAway ? "text-brand" : "text-muted-foreground"}`}>
                       {tie.awayTeam.name}
                     </p>
-                    {awayPlayers.map((name, i) => (
-                      <p key={i} className={`text-sm ${isWonByAway ? "font-semibold" : ""}`}>{name}</p>
+                    {awayPlayers.map((player) => (
+                      <p key={player.id} className={`text-sm ${isWonByAway ? "font-semibold" : ""}`}>
+                        <PlayerLink id={player.id} name={player.name} />
+                      </p>
                     ))}
                   </div>
                 </div>
 
-                {/* Football cards display */}
                 {sportSlug === "football" && score && (() => {
                   const fb = score.scoreData as { homeCards?: { playerName: string; type: string; minute?: number }[]; awayCards?: { playerName: string; type: string; minute?: number }[] };
                   const allCards = [

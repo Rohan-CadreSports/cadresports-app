@@ -34,11 +34,11 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-surface border-b border-border-light">
       <div className="max-w-7xl mx-auto px-3 sm:px-6">
-        <div className="flex items-center justify-between h-14">
+        <div className="flex items-center justify-between h-13 sm:h-14">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 press-effect shrink-0">
+          <Link href="/" className="flex items-center gap-2 press-effect shrink-0">
             <img src="/logo.png" alt="CadreSports" className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl" />
-            <span className="font-serif text-xl sm:text-[22px] tracking-tight text-foreground">CadreSports</span>
+            <span className="text-base sm:text-lg font-bold tracking-tight text-dark">CadreSports</span>
           </Link>
 
           {/* Desktop nav */}

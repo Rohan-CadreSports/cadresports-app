@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Calendar, Trophy, Swords, ChevronRight } from "lucide-react";
 import { RegisterButton } from "./register-button";
+import { PlayerLink } from "@/components/player-link";
 
 function formatShortDate(date: Date | null): string {
   if (!date) return "";
@@ -35,7 +36,7 @@ export default async function LeagueDetailPage({
         include: {
           teams: {
             include: {
-              captain: { select: { name: true } },
+              captain: { select: { id: true, name: true } },
               _count: { select: { players: true } },
             },
           },
@@ -178,7 +179,7 @@ export default async function LeagueDetailPage({
               <div key={team.id} className="flex items-center justify-between py-2.5 px-3 bg-surface border border-border-light rounded-xl shadow-[var(--shadow-xs)]">
                 <div className="min-w-0">
                   <p className="text-sm font-medium truncate">{team.name}</p>
-                  <p className="text-xs text-muted-foreground">{team.captain.name}</p>
+                  <p className="text-xs text-muted-foreground"><PlayerLink id={team.captain.id} name={team.captain.name} /></p>
                 </div>
                 <span className="text-xs text-muted-foreground shrink-0">{team._count.players}p</span>
               </div>

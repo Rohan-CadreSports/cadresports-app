@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ArrowLeft, Users, Crown } from "lucide-react";
 import { AddTeamForm } from "./add-team-form";
 import { PlayerActions, DeleteTeamButton, AssignPlayerButton } from "./team-player-actions";
+import { PlayerLink, PlayerAvatar } from "@/components/player-link";
 
 export default async function TeamsPage({
   params,
@@ -80,7 +81,7 @@ export default async function TeamsPage({
           <div className="flex flex-wrap gap-2">
             {unassignedPlayers.map((p) => (
               <span key={p.id} className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
-                {p.name}
+                <PlayerLink id={p.id} name={p.name} />
               </span>
             ))}
           </div>
@@ -100,7 +101,7 @@ export default async function TeamsPage({
                 <div>
                   <CardTitle className="text-base">{team.name}</CardTitle>
                   <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                    <Crown className="w-3 h-3 text-yellow-500" /> Captain: {team.captain.name}
+                    <Crown className="w-3 h-3 text-yellow-500" /> Captain: <PlayerLink id={team.captain.id} name={team.captain.name} />
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -113,10 +114,8 @@ export default async function TeamsPage({
               <div className="space-y-1">
                 {team.players.map((tp) => (
                   <div key={tp.id} className="flex items-center gap-2 py-1.5 px-2 bg-muted rounded-lg">
-                    <div className="w-6 h-6 bg-brand rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
-                      {tp.player.name[0]?.toUpperCase() ?? "?"}
-                    </div>
-                    <span className="text-sm">{tp.player.name}</span>
+                    <PlayerAvatar id={tp.player.id} name={tp.player.name} size="xs" />
+                    <span className="text-sm"><PlayerLink id={tp.player.id} name={tp.player.name} /></span>
                     {tp.playerId === team.captainId && (
                       <Crown className="w-3 h-3 text-yellow-500 shrink-0" />
                     )}

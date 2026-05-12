@@ -12,7 +12,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", loading, children, disabled, ...props }, ref) => {
     const base = [
-      "inline-flex items-center justify-center font-sans font-semibold",
+      "inline-flex items-center justify-center font-semibold rounded-2xl",
       "transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
       "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       "disabled:opacity-40 disabled:pointer-events-none",
@@ -20,15 +20,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ].join(" ");
 
     const variants = {
-      primary: "bg-brand text-white hover:opacity-90 rounded-full",
-      secondary: "bg-accent text-accent-foreground hover:opacity-90 rounded-full",
-      outline: "border border-border text-foreground hover:bg-muted/80 rounded-full",
-      ghost: "text-muted-foreground hover:bg-muted/60 hover:text-foreground rounded-full",
-      danger: "bg-red-500 text-white hover:opacity-90 rounded-full",
+      primary: "bg-brand text-white hover:opacity-90",
+      secondary: "bg-dark text-white hover:opacity-90",
+      outline: "border border-border text-foreground hover:bg-muted/80",
+      ghost: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+      danger: "bg-red-500 text-white hover:opacity-90",
     };
 
     const sizes = {
-      sm: "h-9 px-5 text-sm gap-1.5",
+      sm: "h-9 px-4 text-sm rounded-xl gap-1.5",
       md: "h-11 px-6 text-sm gap-2",
       lg: "h-[52px] px-8 text-base gap-2",
     };

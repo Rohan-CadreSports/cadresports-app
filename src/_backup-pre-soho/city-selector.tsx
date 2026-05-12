@@ -16,7 +16,7 @@ export function CitySelector({
 
   return (
     <div>
-      <p className="text-sm font-sans font-semibold mb-3 flex items-center gap-1.5 text-foreground">
+      <p className="text-sm font-semibold mb-2.5 flex items-center gap-1.5 text-foreground">
         <MapPin className="w-4 h-4 text-brand" />
         {selectedCity ? `Showing leagues in ${selectedCity}` : "Find leagues in your city"}
       </p>
@@ -32,12 +32,12 @@ export function CitySelector({
             }
           }}
           placeholder="Enter city name..."
-          className="flex-1 h-12 px-4 bg-surface border border-border text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand text-base font-sans transition-all duration-200"
+          className="flex-1 h-12 px-4 rounded-2xl bg-surface border border-border text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand text-base transition-all duration-200"
         />
         {selectedCity && (
           <button
             onClick={() => onCityChange("")}
-            className="inline-action h-11 px-4 border border-border text-sm font-sans font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+            className="inline-action h-11 px-4 rounded-2xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
           >
             Clear
           </button>
@@ -48,7 +48,7 @@ export function CitySelector({
           <button
             key={c}
             onClick={() => onCityChange(selectedCity === c ? "" : c)}
-            className={`inline-action text-xs font-sans px-3.5 py-1.5 border font-medium transition-all duration-200 ${
+            className={`inline-action text-sm px-3 py-1.5 rounded-full border font-medium transition-all duration-200 ${
               selectedCity === c
                 ? "bg-brand text-white border-brand"
                 : "bg-surface border-border-light hover:border-brand hover:text-brand hover:bg-brand/5"

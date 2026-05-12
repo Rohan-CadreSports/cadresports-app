@@ -8,12 +8,18 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc/client";
 import { User } from "lucide-react";
+import { PlayerCard } from "@/components/player-card";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
   const { data: profile } = trpc.auth.getProfile.useQuery(undefined, {
     enabled: !!session,
   });
+
+  const { data: publicProfile } = trpc.player.getPublicProfile.useQuery(
+    { id: session?.user?.id ?? "" },
+    { enabled: !!session?.user?.id }
+  );
 
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
@@ -68,11 +74,33 @@ export default function ProfilePage() {
             <User className="w-10 h-10 text-white" />
           )}
         </div>
-        <h1 className="text-xl font-bold">{profile?.name || session.user.name}</h1>
+        <h1 className="font-serif text-2xl tracking-tight">{profile?.name || session.user.name}</h1>
         <Badge variant="info" className="mt-1">
           {(profile?.role || session.user.role).replace(/_/g, " ")}
         </Badge>
       </div>
+
+      {/* Player Card */}
+      {publicProfile && (
+        <div>
+          <p className="text-[10px] tracking-soho font-sans font-medium uppercase text-muted-foreground mb-3">
+            Your Player Card
+          </p>
+          <PlayerCard
+            player={{
+              id: publicProfile.id,
+              name: publicProfile.name,
+              city: publicProfile.city,
+              gender: publicProfile.gender,
+              role: publicProfile.role,
+              createdAt: publicProfile.createdAt as unknown as string,
+              favoriteSports: publicProfile.favoriteSports,
+              image: publicProfile.image,
+            }}
+            stats={publicProfile.stats}
+          />
+        </div>
+      )}
 
       {error && (
         <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>
@@ -89,7 +117,7 @@ export default function ProfilePage() {
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">Bio</label>
             <textarea
-              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all min-h-[80px] text-base"
+              className="w-full px-4 py-3 border border-border bg-white text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all min-h-[80px] text-base"
               placeholder="Tell us about yourself..."
               value={bio}
               onChange={(e) => setBio(e.target.value)}
@@ -126,7 +154,7 @@ export default function ProfilePage() {
             <span className="font-medium">
               {profile?.createdAt
                 ? new Date(profile.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" })
-                : "—"}
+                : "\u2014"}
             </span>
           </div>
         </div>
