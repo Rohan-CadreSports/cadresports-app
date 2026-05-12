@@ -8,8 +8,8 @@ export function Card({
   return (
     <div
       className={cn(
-        "bg-surface p-5 shadow-[var(--shadow-sm)] border border-border-light",
-        "transition-shadow duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        "rounded-[10px] bg-surface p-5 shadow-[var(--shadow-sm)] border border-border-light",
+        "transition-shadow duration-200",
         className
       )}
       {...props}
@@ -35,7 +35,7 @@ export function CardTitle({
   children,
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("font-serif text-xl text-foreground tracking-tight", className)}>
+    <h3 className={cn("text-lg font-medium text-foreground tracking-tight", className)}>
       {children}
     </h3>
   );
@@ -46,7 +46,7 @@ export function CardDescription({
   children,
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-sm text-muted-foreground font-sans leading-relaxed", className)}>
+    <p className={cn("text-sm text-muted-foreground leading-relaxed", className)}>
       {children}
     </p>
   );

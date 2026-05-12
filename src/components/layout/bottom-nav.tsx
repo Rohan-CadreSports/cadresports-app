@@ -7,11 +7,11 @@ import { Home, Trophy, UserPlus, User, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", icon: Home, label: "HOME" },
-  { href: "/leagues", icon: Trophy, label: "LEAGUES" },
-  { href: "/connect", icon: UserPlus, label: "CONNECT" },
-  { href: "/dashboard", icon: LayoutDashboard, label: "DASH", auth: true },
-  { href: "/profile", icon: User, label: "ACCOUNT", auth: true },
+  { href: "/", icon: Home, label: "Home" },
+  { href: "/leagues", icon: Trophy, label: "Leagues" },
+  { href: "/connect", icon: UserPlus, label: "Connect" },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Dash", auth: true },
+  { href: "/profile", icon: User, label: "Account", auth: true },
 ];
 
 export function BottomNav() {
@@ -30,12 +30,12 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center gap-1 flex-1 py-1.5 rounded-xl transition-all duration-200 press-effect",
+                "flex flex-col items-center justify-center gap-1 flex-1 py-1.5 transition-colors duration-200",
                 isActive ? "text-brand" : "text-muted-foreground"
               )}
             >
-              <item.icon className="w-[20px] h-[20px]" strokeWidth={isActive ? 2.5 : 1.8} />
-              <span className="text-[9px] font-sans tracking-soho font-medium leading-none">{item.label}</span>
+              <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.2 : 1.5} />
+              <span className="text-[10px] font-medium leading-none">{item.label}</span>
             </Link>
           );
         })}

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { DM_Sans, Cardo } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/auth-provider";
@@ -7,14 +7,16 @@ import { TRPCProvider } from "@/lib/trpc/provider";
 import { Navbar } from "@/components/layout/navbar";
 import { BottomNav } from "@/components/layout/bottom-nav";
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-dm-sans",
+  weight: ["400", "500", "600", "700"],
 });
 
-const playfair = Playfair_Display({
+const cardo = Cardo({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-cardo",
+  weight: ["400", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -38,7 +40,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#F9F8F4",
+  themeColor: "#FFFEF7",
 };
 
 export default function RootLayout({
@@ -49,7 +51,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} ${geistMono.variable} antialiased`}
+      className={`${dmSans.variable} ${cardo.variable} ${geistMono.variable} antialiased`}
     >
       <body className="bg-background text-foreground overflow-hidden">
         <AuthProvider>

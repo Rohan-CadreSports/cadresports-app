@@ -35,7 +35,7 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
     QRCode.toDataURL(profileUrl, {
       width: 120,
       margin: 1,
-      color: { dark: "#1A1A1A", light: "#F9F8F4" },
+      color: { dark: "#1A1A1A", light: "#FFFEF7" },
       errorCorrectionLevel: "M",
     }).then(setQrDataUrl);
   }, [profileUrl]);
@@ -50,7 +50,7 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
     const html2canvas = (await import("html2canvas-pro")).default;
     const canvas = await html2canvas(cardRef.current, {
       scale: 3,
-      backgroundColor: "#F9F8F4",
+      backgroundColor: "#FFFEF7",
       useCORS: true,
     });
     return canvas.toDataURL("image/jpeg", 0.92);
@@ -133,7 +133,7 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
       {/* The Card */}
       <div
         ref={cardRef}
-        className="relative w-full bg-[#F9F8F4] border border-border overflow-hidden"
+        className="relative w-full bg-[#FFFEF7] rounded-[10px] border border-border overflow-hidden"
         style={{ aspectRatio: "1.586" }}
       >
         {/* Top accent bar */}

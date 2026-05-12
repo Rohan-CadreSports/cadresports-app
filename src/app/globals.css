@@ -8,31 +8,29 @@
   --brand-primary-light: #00b894;
   --brand-primary-dark: #007a64;
 
-  /* Soho Paper palette */
-  --background: #F9F8F4;
+  /* Soho House palette — warm cream base */
+  --background: #FFFEF7;
   --foreground: #1A1A1A;
   --surface: #FFFFFF;
-  --muted: #F0EDE6;
+  --muted: #F5F4EE;
   --muted-foreground: #8A8578;
-  --border: #E5E2DA;
-  --border-light: #EDEBE5;
+  --border: #E8E6DE;
+  --border-light: #F0EDE6;
   --ring: #00967B;
 
-  /* Soho accent — deep sports green */
   --accent: #2C3E30;
-  --accent-foreground: #F9F8F4;
+  --accent-foreground: #FFFEF7;
 
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.03);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.03);
-  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.03);
-  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.06), 0 8px 10px -6px rgba(0,0,0,0.03);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
 
   --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --duration-fast: 150ms;
   --duration-normal: 200ms;
-  --duration-slow: 300ms;
+
+  --radius: 10px;
 }
 
 @theme inline {
@@ -50,8 +48,8 @@
   --color-ring: var(--ring);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-cardo);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -61,7 +59,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--background);
@@ -70,22 +67,25 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   line-height: 1.6;
-  letter-spacing: -0.011em;
+  letter-spacing: -0.01em;
   -webkit-text-size-adjust: 100%;
 }
 
-/* Serif headings — Soho editorial */
-h1, h2, h3 {
-  font-family: var(--font-playfair), Georgia, serif;
+/* Headings — mostly sans, serif only for hero/display */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.2;
+  font-weight: 500;
 }
 
-h4, h5, h6 {
-  letter-spacing: -0.015em;
-  line-height: 1.25;
+/* Serif class — use sparingly for display headings */
+.font-serif {
+  font-family: var(--font-cardo), Georgia, serif;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 
 /* Touch targets — 44px minimum */
@@ -101,38 +101,27 @@ input, select, textarea {
   font-size: 16px;
 }
 
-/* GPU-accelerated transitions */
-.transition-gpu {
-  will-change: transform, opacity;
-  transition-property: transform, opacity;
-  transition-timing-function: var(--ease-out);
-  transition-duration: var(--duration-normal);
-}
-
-/* Active press effect — native feel */
+/* Active press effect */
 .press-effect {
   transition: transform var(--duration-fast) var(--ease-out);
 }
 .press-effect:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
-/* Backdrop blur for nav bars — warm paper tint */
+/* Backdrop blur — warm cream */
 .backdrop-blur-surface {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  background: rgba(249, 248, 244, 0.85);
+  background: rgba(255, 254, 247, 0.85);
 }
 
-/* Safe area for notch/home indicator */
+/* Safe area */
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-.safe-area-top {
-  padding-top: env(safe-area-inset-top, 0px);
-}
 
-/* No-scrollbar utility — for horizontal carousels */
+/* No-scrollbar */
 .no-scrollbar {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -142,7 +131,6 @@ input, select, textarea {
   display: none;
 }
 
-/* Horizontal scroll container for tables on mobile */
 .mobile-scroll {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -151,43 +139,24 @@ input, select, textarea {
   display: none;
 }
 
-/* Scrollbar styling (desktop) */
+/* Desktop scrollbar */
 @media (min-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 5px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--muted-foreground);
-  }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 }
 
-/* Pull-to-refresh prevention on mobile */
+/* Prevent pull-to-refresh */
 @media (max-width: 767px) {
-  body {
-    overscroll-behavior-y: contain;
-  }
+  body { overscroll-behavior-y: contain; }
 }
 
-/* Soho image treatment — warm, film-like */
+/* Soho image treatment */
 .soho-img {
-  filter: sepia(0.08) contrast(1.05) brightness(0.98);
+  filter: contrast(1.03) brightness(0.99);
 }
 
-/* Soho divider */
-.soho-divider {
-  height: 1px;
-  background: var(--border);
-  border: none;
-}
-
-/* Tracking utilities */
+/* Tracking utility */
 .tracking-soho {
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
 }
