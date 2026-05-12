@@ -91,12 +91,31 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
 
   async function handleDownload() {
     const blob = await generateCardBlob();
+    const file = new File(
+      [blob],
+      `${player.name.replace(/\s+/g, "-")}-cadresports-card.jpg`,
+      { type: "image/jpeg" }
+    );
+
+    // Mobile: use share API to trigger "Save Image" option
+    if (navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file] });
+        return;
+      } catch {
+        // user cancelled — fall through to download
+      }
+    }
+
+    // Desktop fallback: anchor download
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.download = `${player.name.replace(/\s+/g, "-")}-cadresports-card.jpg`;
-    link.href = url;
-    link.click();
-    URL.revokeObjectURL(url);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   return (
@@ -169,12 +188,6 @@ export function PlayerCard({ player, stats }: PlayerCardProps) {
             </div>
           </div>
 
-          {/* Profile URL — visible on the exported image */}
-          <div className="mt-2 pt-2 border-t border-[#E5E2DA]">
-            <p className="text-[8px] font-sans text-muted-foreground truncate">
-              View my profile: {profileUrl}
-            </p>
-          </div>
         </div>
       </div>
 
