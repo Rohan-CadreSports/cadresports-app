@@ -28,7 +28,8 @@ function NavLink({ href, icon: Icon, label }: { href: string; icon: LucideIcon; 
 }
 
 export function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const isLoggedOut = status === "unauthenticated";
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -67,7 +68,7 @@ export function Navbar() {
                   </button>
                 </div>
               </div>
-            ) : (
+            ) : isLoggedOut ? (
               <div className="flex items-center gap-2 ml-2">
                 <Link href="/auth/signin">
                   <Button variant="ghost" size="sm">Sign In</Button>
@@ -76,12 +77,12 @@ export function Navbar() {
                   <Button size="sm">Get Started</Button>
                 </Link>
               </div>
-            )}
+            ) : null}
           </div>
 
           {/* Mobile: show Sign Up when not logged in, hamburger always */}
           <div className="md:hidden flex items-center gap-2">
-            {!session && (
+            {isLoggedOut && (
               <Link href="/auth/register">
                 <Button size="sm" className="h-9 px-4 text-[13px]">Sign Up</Button>
               </Link>
