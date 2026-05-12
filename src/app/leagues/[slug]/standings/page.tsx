@@ -66,23 +66,18 @@ export default async function StandingsPage({
   }
 
   return (
-    <div className="pb-20">
-      {/* Dark header */}
-      <div className="bg-accent text-accent-foreground px-4 pt-5 pb-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center gap-3">
-            <Link href={`/leagues/${slug}`} className="p-2 hover:bg-white/10 rounded-[8px] transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div>
-              <h1 className="text-xl font-medium tracking-tight">Leaderboard</h1>
-              <p className="text-sm text-accent-foreground/60">{league.name}</p>
-            </div>
-          </div>
+    <div className="px-4 pt-6 pb-20 max-w-2xl mx-auto space-y-5">
+      <div className="flex items-center gap-3">
+        <Link href={`/leagues/${slug}`} className="p-2 hover:bg-muted rounded-[8px]">
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-medium tracking-tight">Leaderboard & Results</h1>
+          <p className="text-sm text-muted-foreground">{league.name}</p>
         </div>
       </div>
 
-      <div className="px-4 max-w-2xl mx-auto space-y-6 -mt-1">
+      <div className="space-y-6">
         {league.divisions.map((div) => {
           const divStandings = standingsByDiv.get(div.id) || [];
 
