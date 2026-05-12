@@ -6,6 +6,7 @@ import { AuthProvider } from "@/components/auth/auth-provider";
 import { TRPCProvider } from "@/lib/trpc/provider";
 import { Navbar } from "@/components/layout/navbar";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { ScrollReset } from "@/components/scroll-reset";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default function RootLayout({
           <TRPCProvider>
             <div className="relative h-screen w-full flex flex-col">
               <Navbar />
+              <ScrollReset />
               <main className="flex-1 overflow-y-auto overscroll-contain pb-16 md:pb-0">
                 {children}
               </main>
