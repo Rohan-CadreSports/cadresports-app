@@ -1,8 +1,25 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const user = await db.user.findUnique({
+    where: { id },
+    select: { name: true, city: true },
+  });
+  if (!user) return { title: "Player Not Found" };
+  const title = `${user.name} - Player Profile`;
+  const description = `View ${user.name}'s sports profile${user.city ? ` from ${user.city}` : ""}. Stats, leagues, and match history on CadreSports.`;
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+  };
+}
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronRight } from "lucide-react";

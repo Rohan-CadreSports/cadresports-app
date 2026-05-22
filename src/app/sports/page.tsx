@@ -1,9 +1,15 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Sports",
+  description: "Explore sports available on CadreSports. Join badminton leagues, football tournaments, and more across Indian cities.",
+};
 
 export default async function SportsPage() {
   const sports = await db.sport.findMany({

@@ -1,11 +1,17 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { LeagueCard } from "@/components/league-card";
+
+export const metadata: Metadata = {
+  title: "Browse Leagues",
+  description: "Find and join badminton, football, and other sports leagues near you. Browse live, upcoming, and completed leagues across Indian cities.",
+};
 
 
 export default async function LeaguesPage({

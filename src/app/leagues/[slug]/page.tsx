@@ -1,9 +1,26 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const league = await db.league.findUnique({
+    where: { slug },
+    select: { name: true, description: true, city: true, sport: { select: { name: true } } },
+  });
+  if (!league) return { title: "League Not Found" };
+  const title = league.name;
+  const description = league.description || `${league.sport.name} league in ${league.city || "India"}. View standings, matches, and results on CadreSports.`;
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+  };
+}
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Calendar, Trophy, Swords, ChevronRight } from "lucide-react";
 import { RegisterButton } from "./register-button";

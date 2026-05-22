@@ -25,10 +25,38 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://cadresports.vercel.app";
+
 export const metadata: Metadata = {
-  title: "CadreSports - Play. Compete. Connect.",
-  description: "Join sports leagues, compete in tournaments, and connect with players near you.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "CadreSports - Play. Compete. Connect.",
+    template: "%s | CadreSports",
+  },
+  description: "India's multi-sport league platform. Join badminton, football leagues near you. Compete in tournaments, track standings, and connect with players in Mumbai, Delhi, Pune, Bangalore, Chennai & more.",
+  keywords: ["sports league", "badminton league", "football league", "tournament", "India", "Mumbai", "Delhi", "Pune", "Bangalore", "Chennai", "Hyderabad", "CadreSports", "sports platform"],
+  authors: [{ name: "CadreSports" }],
+  creator: "CadreSports",
   manifest: "/manifest.json",
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: siteUrl,
+    siteName: "CadreSports",
+    title: "CadreSports - Play. Compete. Connect.",
+    description: "India's multi-sport league platform. Join badminton & football leagues, compete in tournaments, and connect with players near you.",
+    images: [{ url: "/logo.png", width: 512, height: 512, alt: "CadreSports Logo" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "CadreSports - Play. Compete. Connect.",
+    description: "India's multi-sport league platform. Join leagues, compete, and connect with players near you.",
+    images: ["/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
