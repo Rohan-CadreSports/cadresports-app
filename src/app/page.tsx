@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight, Shield, Zap, MapPin, Users, UserPlus, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
@@ -23,21 +22,13 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="relative w-full min-h-[85vh] sm:min-h-[70vh] flex flex-col justify-end" style={{ background: "linear-gradient(135deg, #0D0D0D 0%, #1A2B27 50%, #0D332C 100%)" }}>
-        <Image
-          src="/hero-sports.jpg"
-          alt="Sports facility"
-          fill
-          priority
-          className="object-cover opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-        <div className="relative px-6 pb-12 sm:pb-16 sm:px-10 text-white max-w-3xl">
-          <h1 className="text-4xl sm:text-5xl font-bold leading-[1.2] tracking-tight">
+      <section className="w-full py-20 sm:py-28 px-6 sm:px-10 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-4xl sm:text-5xl font-bold leading-[1.2] tracking-tight text-foreground">
             Play. Compete.<br />
-            <span className="text-brand-light">Connect.</span>
+            <span className="text-brand">Connect.</span>
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-white/70 max-w-md leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-md leading-relaxed">
             Join sports leagues near you. Compete in tournaments and connect with players who share your passion.
           </p>
           <div className="mt-8 flex gap-3">
@@ -48,7 +39,7 @@ export default async function HomePage() {
               </Button>
             </Link>
             <Link href="/leagues">
-              <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white hover:text-dark">
+              <Button variant="outline" size="lg">
                 Browse Leagues
               </Button>
             </Link>
@@ -89,10 +80,10 @@ export default async function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-dark text-white">
+      <section className="py-16 px-6 bg-teal-light">
         <div className="max-w-lg mx-auto text-center">
           <h2 className="text-3xl font-bold tracking-tight mb-4">Ready to play?</h2>
-          <p className="text-white/60 mb-8 leading-relaxed">
+          <p className="text-muted-foreground mb-8 leading-relaxed">
             Join thousands of players competing in leagues across the country.
           </p>
           <Link href="/auth/register">
@@ -105,13 +96,13 @@ export default async function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-dark text-white border-t-[3px] border-brand py-12 px-6">
+      <footer className="border-t border-border py-8 px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="CadreSports" className="w-7 h-7 rounded-md" />
-            <span className="text-base font-semibold tracking-tight">CadreSports</span>
+            <span className="text-base font-semibold tracking-tight text-foreground">CadreSports</span>
           </div>
-          <p className="text-sm text-white/50">
+          <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} CadreSports. All rights reserved.
           </p>
         </div>
