@@ -21,7 +21,7 @@ export function BottomNav() {
   const visibleItems = navItems.filter((item) => !item.auth || session);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-border safe-area-bottom shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden backdrop-blur-surface border-t border-border-light safe-area-bottom">
       <div className="flex items-center justify-around h-14 px-2">
         {visibleItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
@@ -34,7 +34,7 @@ export function BottomNav() {
                 isActive ? "text-brand" : "text-muted-foreground"
               )}
             >
-              <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.2 : 2} />
+              <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.2 : 1.5} />
               <span className="text-[10px] font-medium leading-none">{item.label}</span>
             </Link>
           );

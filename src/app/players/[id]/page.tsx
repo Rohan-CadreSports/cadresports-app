@@ -194,8 +194,8 @@ export default async function PlayerProfilePage({
           <Link href="/auth/register" className="block">
             <div className="rounded-[10px] bg-accent text-accent-foreground p-5 flex items-center justify-between active:scale-[0.98] transition-transform">
               <div>
-                <p className="text-[10px] tracking-wide font-medium uppercase opacity-60 mb-1">Join the Club</p>
-                <p className="text-lg font-semibold tracking-tight">Want to compete?</p>
+                <p className="text-[10px] tracking-soho font-medium uppercase opacity-60 mb-1">Join the Club</p>
+                <p className="font-serif text-lg tracking-tight">Want to compete?</p>
               </div>
               <div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center shrink-0">
                 <ArrowRight className="w-5 h-5 text-white" />
@@ -207,7 +207,7 @@ export default async function PlayerProfilePage({
         {/* Leagues — sorted: upcoming → live → completed */}
         {sortedLeagues.length > 0 && (
           <div>
-            <p className="text-[10px] tracking-wide font-medium uppercase text-muted-foreground mb-3">Leagues</p>
+            <p className="text-[10px] tracking-soho font-medium uppercase text-muted-foreground mb-3">Leagues</p>
             <div className="space-y-1.5">
               {sortedLeagues.map((league) => (
                 <Link key={league.id} href={`/leagues/${league.slug}`}>

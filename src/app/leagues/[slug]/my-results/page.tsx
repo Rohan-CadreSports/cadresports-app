@@ -120,19 +120,19 @@ export default async function MyResultsPage({
           <div className="grid grid-cols-4 gap-3">
             <div className="text-center">
               <p className="text-2xl font-bold tabular-nums">{totalTies}</p>
-              <p className="text-[10px] tracking-wide uppercase text-accent-foreground/50 mt-0.5">Played</p>
+              <p className="text-[10px] tracking-soho uppercase text-accent-foreground/50 mt-0.5">Played</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold tabular-nums text-brand-light">{tiesWon}</p>
-              <p className="text-[10px] tracking-wide uppercase text-accent-foreground/50 mt-0.5">Won</p>
+              <p className="text-[10px] tracking-soho uppercase text-accent-foreground/50 mt-0.5">Won</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold tabular-nums text-red-400">{tiesLost}</p>
-              <p className="text-[10px] tracking-wide uppercase text-accent-foreground/50 mt-0.5">Lost</p>
+              <p className="text-[10px] tracking-soho uppercase text-accent-foreground/50 mt-0.5">Lost</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold tabular-nums text-brand-light">{totalPointsEarned}</p>
-              <p className="text-[10px] tracking-wide uppercase text-accent-foreground/50 mt-0.5">Points</p>
+              <p className="text-[10px] tracking-soho uppercase text-accent-foreground/50 mt-0.5">Points</p>
             </div>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default async function MyResultsPage({
       <div className="px-4 max-w-2xl mx-auto space-y-5 pt-4">
       {/* Match History */}
       <div>
-        <p className="text-[11px] tracking-wide font-medium uppercase text-muted-foreground mb-3">Match History</p>
+        <p className="text-[11px] tracking-soho font-medium uppercase text-muted-foreground mb-3">Match History</p>
         {ties.length === 0 ? (
           <Card>
             <p className="text-sm text-muted-foreground text-center py-6">No completed matches yet</p>

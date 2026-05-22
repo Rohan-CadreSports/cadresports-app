@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins, Inter, JetBrains_Mono } from "next/font/google";
+import { DM_Sans, Cardo } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { TRPCProvider } from "@/lib/trpc/provider";
@@ -7,20 +8,20 @@ import { Navbar } from "@/components/layout/navbar";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { ScrollReset } from "@/components/scroll-reset";
 
-const poppins = Poppins({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-poppins",
+  variable: "--font-dm-sans",
   weight: ["400", "500", "600", "700"],
 });
 
-const inter = Inter({
+const cardo = Cardo({
   subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-cardo",
+  weight: ["400", "700"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -40,7 +41,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#FFFFFF",
+  themeColor: "#FFFEF7",
 };
 
 export default function RootLayout({
@@ -51,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${poppins.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
+      className={`${dmSans.variable} ${cardo.variable} ${geistMono.variable} antialiased`}
     >
       <body className="bg-background text-foreground overflow-hidden">
         <AuthProvider>

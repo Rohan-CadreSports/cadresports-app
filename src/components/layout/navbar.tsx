@@ -15,13 +15,13 @@ function NavLink({ href, icon: Icon, label }: { href: string; icon: LucideIcon; 
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-200",
+        "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
         isActive
-          ? "text-brand border-b-[3px] border-brand"
-          : "text-muted-foreground hover:text-foreground border-b-[3px] border-transparent"
+          ? "bg-surface text-foreground shadow-[var(--shadow-xs)]"
+          : "text-muted-foreground hover:text-foreground"
       )}
     >
-      <Icon className="w-4 h-4" strokeWidth={2} />
+      <Icon className="w-4 h-4" strokeWidth={1.8} />
       {label}
     </Link>
   );
@@ -33,34 +33,31 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-border shadow-[var(--shadow-xs)]">
-      {/* Teal accent line */}
-      <div className="h-[2px] w-full bg-brand" />
-
+    <nav className="sticky top-0 z-50 backdrop-blur-surface border-b border-border-light">
       <div className="max-w-7xl mx-auto px-5 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           <Link href="/" className="flex items-center gap-2.5 press-effect shrink-0">
-            <img src="/logo.png" alt="CadreSports" className="w-8 h-8 rounded-lg" />
-            <span className="text-[17px] font-semibold text-foreground tracking-tight">CadreSports</span>
+            <img src="/logo.png" alt="CadreSports" className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg" />
+            <span className="text-[17px] font-medium tracking-tight text-foreground">CadreSports</span>
           </Link>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
-            <div className="flex items-center gap-1 mr-4">
+            <div className="flex items-center bg-muted/50 rounded-full p-0.5 mr-3">
               <NavLink href="/leagues" icon={Trophy} label="Leagues" />
               {session && <NavLink href="/dashboard" icon={LayoutDashboard} label="Dashboard" />}
               <NavLink href="/connect" icon={UserPlus} label="Connect" />
             </div>
             {session ? (
               <div className="relative group">
-                <button className="flex items-center gap-2 h-9 px-3 rounded-[6px] hover:bg-muted transition-all duration-200">
+                <button className="flex items-center gap-2 h-9 px-3 rounded-full hover:bg-muted transition-all duration-200">
                   <div className="w-7 h-7 bg-brand rounded-full flex items-center justify-center">
                     <span className="text-xs font-bold text-white">{session.user.name?.[0]?.toUpperCase()}</span>
                   </div>
-                  <span className="text-sm font-medium text-foreground hidden lg:inline">{session.user.name}</span>
+                  <span className="text-sm font-medium hidden lg:inline">{session.user.name}</span>
                 </button>
-                <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-border rounded-[8px] shadow-[var(--shadow-lg)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-                  <Link href="/profile" className="flex items-center gap-2.5 px-4 py-3 text-sm text-foreground hover:bg-teal-light transition-colors">
+                <div className="absolute right-0 top-full mt-1 w-48 bg-surface border border-border-light rounded-[10px] shadow-[var(--shadow-lg)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+                  <Link href="/profile" className="flex items-center gap-2.5 px-4 py-3 text-sm hover:bg-muted transition-colors">
                     <User className="w-4 h-4 text-muted-foreground" /> Profile
                   </Link>
                   <button
@@ -83,15 +80,15 @@ export function Navbar() {
             ) : null}
           </div>
 
-          {/* Mobile */}
+          {/* Mobile: show Sign Up when not logged in, hamburger always */}
           <div className="md:hidden flex items-center gap-2">
             {isLoggedOut && (
               <Link href="/auth/register">
-                <Button size="sm" className="h-9 px-4 text-sm">Sign Up</Button>
+                <Button size="sm" className="h-9 px-4 text-[13px]">Sign Up</Button>
               </Link>
             )}
             <button
-              className="p-2 -mr-2 rounded-[6px] text-foreground hover:bg-muted transition-colors"
+              className="p-2 -mr-2 rounded-full hover:bg-muted transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -100,24 +97,24 @@ export function Navbar() {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden pb-5 pt-2 space-y-1 border-t border-border">
-            <Link href="/leagues" className="block px-4 py-3 text-[15px] font-medium text-foreground rounded-[6px] hover:bg-muted transition-colors" onClick={() => setMenuOpen(false)}>
+          <div className="md:hidden pb-5 pt-2 space-y-1">
+            <Link href="/leagues" className="block px-4 py-3 text-[15px] font-medium rounded-[10px] hover:bg-muted transition-colors" onClick={() => setMenuOpen(false)}>
               Leagues
             </Link>
-            <Link href="/connect" className="block px-4 py-3 text-[15px] font-medium text-foreground rounded-[6px] hover:bg-muted transition-colors" onClick={() => setMenuOpen(false)}>
+            <Link href="/connect" className="block px-4 py-3 text-[15px] font-medium rounded-[10px] hover:bg-muted transition-colors" onClick={() => setMenuOpen(false)}>
               Connect
             </Link>
             {session ? (
               <>
-                <Link href="/dashboard" className="block px-4 py-3 text-[15px] font-medium text-foreground rounded-[6px] hover:bg-muted transition-colors" onClick={() => setMenuOpen(false)}>
+                <Link href="/dashboard" className="block px-4 py-3 text-[15px] font-medium rounded-[10px] hover:bg-muted transition-colors" onClick={() => setMenuOpen(false)}>
                   Dashboard
                 </Link>
-                <Link href="/profile" className="block px-4 py-3 text-[15px] font-medium text-foreground rounded-[6px] hover:bg-muted transition-colors" onClick={() => setMenuOpen(false)}>
+                <Link href="/profile" className="block px-4 py-3 text-[15px] font-medium rounded-[10px] hover:bg-muted transition-colors" onClick={() => setMenuOpen(false)}>
                   Profile
                 </Link>
                 <button
                   onClick={() => { signOut(); setMenuOpen(false); }}
-                  className="block w-full text-left px-4 py-3 text-[15px] font-medium text-red-600 rounded-[6px] hover:bg-red-50 transition-colors"
+                  className="block w-full text-left px-4 py-3 text-[15px] font-medium text-red-600 rounded-[10px] hover:bg-red-50 transition-colors"
                 >
                   Sign Out
                 </button>

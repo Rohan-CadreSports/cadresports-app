@@ -16,7 +16,7 @@ export function CitySelector({
 
   return (
     <div>
-      <p className="text-sm font-semibold mb-3 flex items-center gap-1.5 text-foreground">
+      <p className="text-sm font-medium mb-3 flex items-center gap-1.5 text-foreground">
         <MapPin className="w-4 h-4 text-brand" />
         {selectedCity ? `Showing leagues in ${selectedCity}` : "Find leagues in your city"}
       </p>
@@ -32,12 +32,12 @@ export function CitySelector({
             }
           }}
           placeholder="Enter city name..."
-          className="flex-1 h-11 px-4 rounded-[6px] bg-white border-[1.5px] border-gray-300 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-brand focus:ring-[3px] focus:ring-brand/10 text-base transition-all"
+          className="flex-1 h-10 px-3.5 rounded-[8px] bg-surface border border-border text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand text-[14px] transition-all"
         />
         {selectedCity && (
           <button
             onClick={() => onCityChange("")}
-            className="inline-action h-11 px-5 rounded-[6px] border-[1.5px] border-gray-300 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-gray-50 transition-all"
+            className="inline-action h-10 px-4 rounded-[8px] border border-border text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
           >
             Clear
           </button>
@@ -48,10 +48,10 @@ export function CitySelector({
           <button
             key={c}
             onClick={() => onCityChange(selectedCity === c ? "" : c)}
-            className={`inline-action text-sm px-4 py-2 rounded-[6px] border-[1.5px] font-medium transition-all ${
+            className={`inline-action text-[13px] px-4 py-2 rounded-full border font-medium transition-all ${
               selectedCity === c
                 ? "bg-brand text-white border-brand"
-                : "bg-white border-gray-300 hover:border-brand hover:text-brand"
+                : "bg-surface border-border-light hover:border-brand hover:text-brand"
             }`}
           >
             {c}

@@ -97,7 +97,7 @@ export default async function StandingsPage({
 
               {div.ties.length > 0 && (
                 <div>
-                  <p className="text-[11px] tracking-wide font-medium uppercase text-muted-foreground mb-3 mt-4">Results</p>
+                  <p className="text-[11px] tracking-soho font-medium uppercase text-muted-foreground mb-3 mt-4">Results</p>
                   <div className="space-y-2">
                     {div.ties.map((tie) => (
                       <ResultCard key={tie.id} tie={tie} sportSlug={league.sport.slug} />
