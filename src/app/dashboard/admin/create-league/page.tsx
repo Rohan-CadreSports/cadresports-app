@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/client";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { ArrowLeft, Plus, X, Upload, Trash2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AdminCreateLeaguePage() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function AdminCreateLeaguePage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   // 2. Dates
   const [startDate, setStartDate] = useState("");
@@ -97,6 +100,39 @@ export default function AdminCreateLeaguePage() {
       setLoading(false);
     },
   });
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Upload failed");
+        return;
+      }
+
+      setImageUrl(data.url);
+      setImagePreview(URL.createObjectURL(file));
+    } catch {
+      setError("Failed to upload image");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function removeImage() {
+    setImageUrl("");
+    setImagePreview("");
+  }
 
   function addDivision() {
     setDivisions([...divisions, `Division ${String.fromCharCode(65 + divisions.length)}`]);
@@ -206,13 +242,45 @@ export default function AdminCreateLeaguePage() {
             onChange={(e) => setName(e.target.value)}
             required
           />
-          <Input
-            id="imageUrl"
-            label="League Image URL"
-            placeholder="https://example.com/league-photo.jpg"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-          />
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1.5">
+              League Image
+            </label>
+            {imagePreview ? (
+              <div className="relative w-full h-48 rounded-[8px] overflow-hidden border border-border">
+                <Image
+                  src={imagePreview}
+                  alt="League preview"
+                  fill
+                  className="object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-[8px] cursor-pointer hover:border-brand hover:bg-brand/5 transition-colors">
+                <Upload className="w-6 h-6 text-muted-foreground mb-2" />
+                <span className="text-sm text-muted-foreground">
+                  {uploading ? "Uploading..." : "Click to upload image"}
+                </span>
+                <span className="text-xs text-muted-foreground mt-1">
+                  JPEG, PNG, WebP or GIF (max 5MB)
+                </span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handleImageUpload}
+                  disabled={uploading}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">
               Description

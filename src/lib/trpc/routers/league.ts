@@ -98,7 +98,7 @@ export const leagueRouter = router({
         mode: z.enum(["TEAM", "INDIVIDUAL"]).default("TEAM"),
         genderRestriction: z.enum(["OPEN", "MENS_ONLY", "WOMENS_ONLY"]).default("OPEN"),
         description: z.string().max(5000).optional(),
-        imageUrl: z.string().url().max(2000).optional(),
+        imageUrl: z.string().max(2000).optional(),
         rules: z.string().optional(),
         city: z.string().min(1).max(100),
         state: z.string().max(100).optional(),
@@ -239,7 +239,7 @@ export const leagueRouter = router({
     .input(
       z.object({
         leagueId: z.string(),
-        imageUrl: z.string().url().max(2000).or(z.literal("")),
+        imageUrl: z.string().max(2000).or(z.literal("")),
       })
     )
     .mutation(async ({ ctx, input }) => {

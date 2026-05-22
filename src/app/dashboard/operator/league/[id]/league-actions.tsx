@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ImageIcon, Check } from "lucide-react";
+import { ImageIcon, Check, Upload, Trash2 } from "lucide-react";
+import Image from "next/image";
 
 const STATUS_FLOW: Record<string, { next: string; label: string; variant: "primary" | "secondary" | "danger" }[]> = {
   DRAFT: [
@@ -39,7 +39,9 @@ export function LeagueActions({
   const [error, setError] = useState("");
   const [showImageEdit, setShowImageEdit] = useState(false);
   const [imageUrl, setImageUrl] = useState(currentImageUrl || "");
+  const [imagePreview, setImagePreview] = useState(currentImageUrl || "");
   const [imageSaved, setImageSaved] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const updateStatus = trpc.league.updateStatus.useMutation({
     onSuccess: () => {
@@ -63,6 +65,41 @@ export function LeagueActions({
       setError(err.message);
     },
   });
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Upload failed");
+        return;
+      }
+
+      setImageUrl(data.url);
+      setImagePreview(URL.createObjectURL(file));
+      updateImage.mutate({ leagueId, imageUrl: data.url });
+    } catch {
+      setError("Failed to upload image");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function removeImage() {
+    setImageUrl("");
+    setImagePreview("");
+    updateImage.mutate({ leagueId, imageUrl: "" });
+  }
 
   const actions = STATUS_FLOW[currentStatus] || [];
 
@@ -101,23 +138,46 @@ export function LeagueActions({
       </div>
 
       {showImageEdit && (
-        <div className="flex gap-2 items-end">
-          <div className="flex-1">
-            <Input
-              id="leagueImage"
-              label="League Card Image URL"
-              placeholder="https://example.com/photo.jpg"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-            />
-          </div>
-          <Button
-            size="sm"
-            loading={updateImage.isPending}
-            onClick={() => updateImage.mutate({ leagueId, imageUrl })}
-          >
-            {imageSaved ? <Check className="w-4 h-4" /> : "Save"}
-          </Button>
+        <div className="space-y-3">
+          {imagePreview ? (
+            <div className="relative w-full h-40 rounded-[8px] overflow-hidden border border-border">
+              <Image
+                src={imagePreview}
+                alt="League image"
+                fill
+                className="object-cover"
+              />
+              <button
+                type="button"
+                onClick={removeImage}
+                className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-border rounded-[8px] cursor-pointer hover:border-brand hover:bg-brand/5 transition-colors">
+              <Upload className="w-5 h-5 text-muted-foreground mb-1" />
+              <span className="text-sm text-muted-foreground">
+                {uploading ? "Uploading..." : "Click to upload image"}
+              </span>
+              <span className="text-xs text-muted-foreground mt-0.5">
+                JPEG, PNG, WebP or GIF (max 5MB)
+              </span>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={handleImageUpload}
+                disabled={uploading}
+                className="hidden"
+              />
+            </label>
+          )}
+          {imageSaved && (
+            <p className="text-sm text-green-600 flex items-center gap-1">
+              <Check className="w-4 h-4" /> Image saved
+            </p>
+          )}
         </div>
       )}
 
