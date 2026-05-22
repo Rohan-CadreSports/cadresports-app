@@ -37,7 +37,7 @@ export function HomeLeagues({
   return (
     <>
       {/* City Selector */}
-      <section className="py-8 px-6 border-b border-border-light">
+      <section className="py-8 px-6 border-b border-border">
         <div className="max-w-3xl mx-auto">
           <CitySelector selectedCity={selectedCity} onCityChange={setSelectedCity} />
         </div>
@@ -59,11 +59,11 @@ export function HomeLeagues({
         <section className="pt-10 pb-6">
           <div className="px-6 flex justify-between items-end mb-5 max-w-7xl mx-auto">
             <div>
-              <p className="text-[11px] tracking-soho font-medium uppercase text-muted-foreground mb-1">Now Playing</p>
-              <h2 className="text-xl font-medium tracking-tight">Live Leagues</h2>
+              <p className="text-xs font-semibold uppercase text-brand mb-1 tracking-wide">Now Playing</p>
+              <h2 className="text-xl font-semibold tracking-tight">Live Leagues</h2>
             </div>
-            <Link href="/leagues" className="inline-action text-[11px] tracking-soho font-medium uppercase text-muted-foreground hover:text-brand transition-colors">
-              View All
+            <Link href="/leagues" className="inline-action text-sm font-medium text-brand hover:text-brand-dark transition-colors">
+              View All &rarr;
             </Link>
           </div>
           <div className="flex gap-4 overflow-x-auto px-6 no-scrollbar snap-x snap-mandatory pb-4">
@@ -75,14 +75,14 @@ export function HomeLeagues({
       )}
 
       {upcoming.length > 0 && (
-        <section className="pt-8 pb-6 border-t border-border-light">
+        <section className="pt-8 pb-6 border-t border-border">
           <div className="px-6 flex justify-between items-end mb-5 max-w-7xl mx-auto">
             <div>
-              <p className="text-[11px] tracking-soho font-medium uppercase text-muted-foreground mb-1">Join Now</p>
-              <h2 className="text-xl font-medium tracking-tight">Open for Registration</h2>
+              <p className="text-xs font-semibold uppercase text-brand mb-1 tracking-wide">Join Now</p>
+              <h2 className="text-xl font-semibold tracking-tight">Open for Registration</h2>
             </div>
-            <Link href="/leagues" className="inline-action text-[11px] tracking-soho font-medium uppercase text-muted-foreground hover:text-brand transition-colors">
-              View All
+            <Link href="/leagues" className="inline-action text-sm font-medium text-brand hover:text-brand-dark transition-colors">
+              View All &rarr;
             </Link>
           </div>
           <div className="flex gap-4 overflow-x-auto px-6 no-scrollbar snap-x snap-mandatory pb-4">

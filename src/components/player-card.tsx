@@ -141,11 +141,11 @@ export function PlayerCard({ player, stats, qrDataUrl: initialQr }: PlayerCardPr
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5 mb-2">
                 <img src="/logo.png" alt="" className="w-4 h-4 sm:w-5 sm:h-5 rounded" />
-                <span className="text-[9px] sm:text-[10px] tracking-soho font-semibold uppercase text-muted-foreground">
+                <span className="text-[9px] sm:text-[10px] tracking-wide font-semibold uppercase text-muted-foreground">
                   CadreSports
                 </span>
               </div>
-              <h2 className="font-serif text-xl sm:text-2xl leading-tight tracking-tight truncate">{player.name}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight truncate">{player.name}</h2>
               {player.city && (
                 <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">{player.city}</p>
               )}
@@ -169,21 +169,21 @@ export function PlayerCard({ player, stats, qrDataUrl: initialQr }: PlayerCardPr
                 <>
                   <div>
                     <p className="text-lg sm:text-xl font-bold tabular-nums">{stats.leaguesPlayed}</p>
-                    <p className="text-[8px] sm:text-[9px] tracking-soho uppercase text-muted-foreground">Leagues</p>
+                    <p className="text-[8px] sm:text-[9px] tracking-wide uppercase text-muted-foreground">Leagues</p>
                   </div>
                   <div>
                     <p className="text-lg sm:text-xl font-bold tabular-nums">{stats.matchesPlayed}</p>
-                    <p className="text-[8px] sm:text-[9px] tracking-soho uppercase text-muted-foreground">Matches</p>
+                    <p className="text-[8px] sm:text-[9px] tracking-wide uppercase text-muted-foreground">Matches</p>
                   </div>
                   <div>
                     <p className="text-lg sm:text-xl font-bold tabular-nums">{stats.wins}</p>
-                    <p className="text-[8px] sm:text-[9px] tracking-soho uppercase text-muted-foreground">Wins</p>
+                    <p className="text-[8px] sm:text-[9px] tracking-wide uppercase text-muted-foreground">Wins</p>
                   </div>
                 </>
               )}
             </div>
             <div className="text-right">
-              <p className="text-[8px] sm:text-[9px] tracking-soho uppercase text-muted-foreground">Since</p>
+              <p className="text-[8px] sm:text-[9px] tracking-wide uppercase text-muted-foreground">Since</p>
               <p className="text-[11px] sm:text-xs font-semibold">{memberSince}</p>
             </div>
           </div>

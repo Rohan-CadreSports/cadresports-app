@@ -32,9 +32,7 @@ function formatShortDate(date: string | null): string {
 interface LeagueCardProps {
   league: LeagueCardData;
   index?: number;
-  /** "carousel" = horizontal scroll card, "grid" = full-width list card */
   variant?: "carousel" | "grid";
-  /** Show "Your city" badge */
   isYourCity?: boolean;
 }
 
@@ -44,40 +42,39 @@ export function LeagueCard({ league, index = 0, variant = "carousel", isYourCity
   const imageUrl = league.imageUrl || getSportImage(league.sport.name, index);
 
   const card = (
-    <div className={`rounded-[10px] border border-border-light bg-surface overflow-hidden press-effect hover:shadow-[var(--shadow-md)] transition-shadow ${
+    <div className={`rounded-[8px] border border-border bg-white overflow-hidden hover:shadow-[var(--shadow-md)] hover:border-brand transition-all duration-200 ${
       variant === "carousel" ? "min-w-[75vw] sm:min-w-[320px] snap-start" : "w-full"
     }`}>
       {/* Image */}
-      <div className={`relative ${variant === "carousel" ? "aspect-[3/2]" : "aspect-[2.5/1]"} bg-muted overflow-hidden`}>
+      <div className={`relative ${variant === "carousel" ? "aspect-[3/2]" : "aspect-[2.5/1]"} bg-gray-100 overflow-hidden`}>
         <Image
           src={imageUrl}
           alt={league.name}
           fill
-          className="object-cover soho-img"
+          className="object-cover"
           sizes={variant === "carousel" ? "(max-width: 640px) 75vw, 320px" : "(max-width: 640px) 100vw, 600px"}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         <div className="absolute top-3 right-3">
           <Badge
             variant={isLive ? "success" : isOpen ? "info" : "default"}
-            className="bg-white/90 backdrop-blur-sm"
           >
             {isLive ? "Live" : isOpen ? "Open" : "Completed"}
           </Badge>
         </div>
-        <p className="absolute bottom-3 left-4 text-[10px] tracking-soho font-medium uppercase text-white/80">
+        <p className="absolute bottom-3 left-4 text-xs font-semibold uppercase text-white/90 tracking-wide">
           {league.sport.name}
         </p>
       </div>
 
       {/* Details */}
       <div className="p-4">
-        <h3 className="text-[15px] font-medium leading-snug tracking-tight truncate">{league.name}</h3>
+        <h3 className="text-[15px] font-semibold leading-snug truncate">{league.name}</h3>
 
         {(league.startDate || league.endDate) && (
           <div className="flex items-center gap-1.5 mt-2 text-muted-foreground">
             <Calendar className="w-3.5 h-3.5 text-brand" />
-            <span className="text-[13px]">
+            <span className="text-sm">
               {formatShortDate(league.startDate)}
               {league.endDate && <> — {formatShortDate(league.endDate)}</>}
             </span>
@@ -85,16 +82,16 @@ export function LeagueCard({ league, index = 0, variant = "carousel", isYourCity
         )}
 
         {isOpen && league.registrationEnd && (
-          <p className="text-[12px] text-amber-600 font-medium mt-1.5">
+          <p className="text-xs text-amber-600 font-semibold mt-1.5">
             Register by {formatShortDate(league.registrationEnd)}
           </p>
         )}
 
-        <div className="flex items-center gap-3 mt-2.5 text-[13px] text-muted-foreground">
+        <div className="flex items-center gap-3 mt-2.5 text-sm text-muted-foreground">
           {league.city && (
             <span className="flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5" /> {league.city}
-              {isYourCity && <span className="text-brand font-medium text-[11px] ml-0.5">Your city</span>}
+              {isYourCity && <span className="text-brand font-medium text-xs ml-0.5">Your city</span>}
             </span>
           )}
           <span className="flex items-center gap-1">
