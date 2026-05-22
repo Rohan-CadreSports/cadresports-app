@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight, Shield, Zap, MapPin, Users, UserPlus, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
@@ -22,37 +21,43 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero — full screen on mobile */}
-      <section className="relative w-full min-h-[85vh] sm:min-h-[70vh] flex flex-col justify-end">
-        <Image
-          src="/hero-sports.jpg"
-          alt="Luxury sports facility"
-          fill
-          priority
-          className="object-cover soho-img"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/5" />
-        <div className="relative px-6 pb-10 sm:pb-14 sm:px-10 text-white">
-          <h1 className="font-serif text-[42px] sm:text-6xl leading-[1.05] tracking-tight">
-            Play.<br />
-            Compete.<br />
-            <span className="text-brand-light">Connect.</span>
-          </h1>
-          <p className="mt-4 text-[15px] sm:text-base text-white/70 max-w-sm leading-relaxed">
-            Join exclusive sports leagues near you. Compete in tournaments and connect with players who share your passion.
-          </p>
-          <div className="mt-7 flex gap-3">
-            <Link href="/auth/register">
-              <Button size="md">
-                Get Started
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
-            </Link>
-            <Link href="/leagues">
-              <Button variant="outline" size="md" className="border-white/25 text-white hover:bg-white/10 hover:text-white">
-                Browse
-              </Button>
-            </Link>
+      {/* Hero */}
+      <section className="relative w-full overflow-hidden" style={{ background: "linear-gradient(160deg, #00967B 0%, #007A63 50%, #005C4B 100%)" }}>
+        {/* Subtle decorative shapes */}
+        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/[0.06]" />
+        <div className="absolute bottom-8 -left-12 w-40 h-40 rounded-full bg-white/[0.04]" />
+
+        <div className="relative px-6 pt-14 pb-12 sm:px-10 sm:pt-20 sm:pb-16">
+          <div className="max-w-3xl mx-auto">
+            <h1 className="font-serif text-[40px] sm:text-6xl leading-[1.05] tracking-tight text-white">
+              Play.<br />
+              Compete.<br />
+              <span className="text-white/70">Connect.</span>
+            </h1>
+            <p className="mt-5 text-[15px] text-white/60 max-w-xs leading-relaxed">
+              Join exclusive sports leagues near you. Compete in tournaments and connect with players who share your passion.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/auth/register">
+                <Button size="md" className="bg-white text-brand border-white hover:bg-white/95 shadow-[0_2px_12px_rgba(0,0,0,0.12)]">
+                  Sign Up Now
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+              <Link href="/leagues">
+                <Button variant="outline" size="md" className="border-white/20 text-white hover:bg-white/10 hover:text-white hover:border-white/30">
+                  <Trophy className="w-4 h-4 mr-1" />
+                  Browse Leagues
+                </Button>
+              </Link>
+              <Link href="/connect">
+                <Button variant="outline" size="md" className="border-white/20 text-white hover:bg-white/10 hover:text-white hover:border-white/30">
+                  <UserPlus className="w-4 h-4 mr-1" />
+                  Find Players
+                </Button>
+              </Link>
+            </div>
+
           </div>
         </div>
       </section>
